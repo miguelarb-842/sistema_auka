@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Los caciques de Nicaragua</title>
+  <desc id="desc">Ilustración conceptual de un consejo de caciques junto a un lago y volcanes, reunidos alrededor del fuego.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18263D"/>
+      <stop offset=".55" stop-color="#263A5C"/>
+      <stop offset="1" stop-color="#7C5A58"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2F5560"/>
+      <stop offset="1" stop-color="#182E3A"/>
+    </linearGradient>
+    <radialGradient id="fire" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F7D98B" stop-opacity=".95"/>
+      <stop offset=".5" stop-color="#E4B04A" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#E4B04A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".05"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="880" cy="150" r="58" fill="#F1E3C2" opacity=".9"/>
+  <circle cx="860" cy="140" r="58" fill="#263A5C" opacity=".55"/>
+  <g fill="#F8F0E3" opacity=".65">
+    <circle cx="120" cy="100" r="2.5"/><circle cx="210" cy="160" r="2"/><circle cx="320" cy="80" r="3"/>
+    <circle cx="430" cy="140" r="2"/><circle cx="540" cy="90" r="2.5"/><circle cx="700" cy="120" r="2"/>
+    <circle cx="980" cy="90" r="2"/><circle cx="1080" cy="170" r="2.5"/><circle cx="190" cy="240" r="1.8"/>
+  </g>
+
+  <g>
+    <path d="M0 430 L150 280 L290 430 Z" fill="#1D2C47"/>
+    <path d="M200 450 L390 250 L580 450 Z" fill="#22344F"/>
+    <path d="M1010 450 L1150 320 L1200 380 L1200 460 Z" fill="#1D2C47"/>
+    <path d="M330 310 L390 250 L450 310 L420 330 L390 312 L360 332 Z" fill="#E4B04A" opacity=".28"/>
+    <path d="M150 300 L150 430" stroke="#C0603C" stroke-width="3" opacity=".35"/>
+  </g>
+
+  <rect y="440" width="1200" height="180" fill="url(#lake)"/>
+  <g stroke="#E4B04A" stroke-opacity=".28" stroke-width="2">
+    <path d="M80 500 q80 10 160 0"/>
+    <path d="M320 530 q90 12 180 0"/>
+    <path d="M700 505 q95 12 190 0"/>
+    <path d="M920 560 q70 8 140 0"/>
+  </g>
+  <g fill="#263A5C" opacity=".8">
+    <path d="M0 600 Q200 560 400 585 T800 575 T1200 590 L1200 800 L0 800 Z"/>
+  </g>
+
+  <ellipse cx="600" cy="610" rx="300" ry="80" fill="#E4B04A" opacity=".13"/>
+
+  <g>
+    <path d="M560 640 L600 470 L640 640 Z" fill="#C0603C" opacity=".9"/>
+    <path d="M575 610 L600 500 L625 610 Z" fill="#E4B04A"/>
+    <path d="M585 560 q15 -20 30 0 q-15 18 -30 0" fill="#F8F0E3" opacity=".7"/>
+  </g>
+  <circle cx="600" cy="620" r="210" fill="url(#fire)"/>
+
+  <g>
+    <g>
+      <path d="M600 520 q-50 -8 -54 -54 q34 4 54 54" fill="#F8F0E3" opacity=".85"/>
+      <circle cx="600" cy="540" r="34" fill="#7C4636"/>
+      <path d="M600 574 q-60 18 -68 90 l136 0 q-8 -72 -68 -90" fill="#C0603C"/>
+      <path d="M548 610 q52 30 104 0" fill="none" stroke="#E4B04A" stroke-width="4"/>
+      <path d="M570 590 l30 26 l30 -26" fill="none" stroke="#F8F0E3" stroke-width="3"/>
+    </g>
+
+    <g>
+      <circle cx="400" cy="610" r="30" fill="#7C4636"/>
+      <path d="M400 640 q-50 16 -58 76 l116 0 q-8 -60 -58 -76" fill="#2F6F68"/>
+      <path d="M360 670 q40 18 80 0" fill="none" stroke="#E4B04A" stroke-width="3"/>
+      <path d="M370 600 q30 -30 60 0" fill="none" stroke="#F8F0E3" stroke-width="4"/>
+    </g>
+
+    <g>
+      <circle cx="790" cy="606" r="31" fill="#8C5238"/>
+      <path d="M790 637 q-52 16 -60 80 l120 0 q-8 -64 -60 -80" fill="#C0603C"/>
+      <path d="M744 668 q46 20 92 0" fill="none" stroke="#E4B04A" stroke-width="3"/>
+      <path d="M760 592 q30 -26 60 0" fill="none" stroke="#F8F0E3" stroke-width="4"/>
+    </g>
+
+    <g>
+      <circle cx="290" cy="650" r="26" fill="#7C4636"/>
+      <path d="M290 676 q-44 14 -50 66 l100 0 q-6 -52 -50 -66" fill="#263A5C"/>
+      <path d="M252 704 q38 14 76 0" fill="none" stroke="#2F6F68" stroke-width="3"/>
+    </g>
+
+    <g>
+      <circle cx="900" cy="646" r="27" fill="#8C5238"/>
+      <path d="M900 673 q-46 14 -52 70 l104 0 q-6 -56 -52 -70" fill="#7C5A58"/>
+      <path d="M860 704 q40 16 80 0" fill="none" stroke="#E4B04A" stroke-width="3"/>
+    </g>
+  </g>
+
+  <g>
+    <path d="M150 660 q-20 -60 8 -100 q10 44 28 56 q-20 10 -36 44" fill="#2F6F68" opacity=".8"/>
+    <path d="M1030 650 q20 -60 -8 -100 q-10 44 -28 56 q20 10 36 44" fill="#2F6F68" opacity=".8"/>
+  </g>
+
+  <g>
+    <rect x="180" y="690" width="64" height="44" rx="14" fill="#8C5238"/>
+    <path d="M190 690 q22 -22 44 0" fill="none" stroke="#E4B04A" stroke-width="5"/>
+    <path d="M190 712 h44" stroke="#E4B04A" stroke-width="3"/>
+    <rect x="930" y="700" width="54" height="38" rx="12" fill="#7C5A58"/>
+    <path d="M942 700 q15 -18 30 0" fill="none" stroke="#E4B04A" stroke-width="4"/>
+  </g>
+
+  <g transform="translate(430 650)">
+    <rect width="140" height="96" rx="12" fill="#2C3F4A" stroke="#E4B04A" stroke-opacity=".4" stroke-width="2"/>
+    <circle cx="38" cy="34" r="10" fill="none" stroke="#E4B04A" stroke-width="3"/>
+    <path d="M64 24 l16 20 l-16 20 l-16 -20 z" fill="none" stroke="#C0603C" stroke-width="3"/>
+    <path d="M92 22 q16 16 0 32 q-16 -16 0 -32" fill="none" stroke="#F8F0E3" stroke-width="2.5"/>
+    <path d="M28 62 q30 16 60 0" fill="none" stroke="#2F6F68" stroke-width="3"/>
+  </g>
+
+  <rect width="1200" height="800" filter="url(#grain)" opacity=".55"/>
+</svg>

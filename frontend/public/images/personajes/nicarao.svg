@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Nicarao, representación artística conceptual</title>
+  <desc id="desc">Retrato ilustrado de Nicarao con manto geométrico y tocado de plumas, frente a un lago y volcanes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18263D"/>
+      <stop offset=".55" stop-color="#2F5560"/>
+      <stop offset="1" stop-color="#7C5A58"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A85E3F"/>
+      <stop offset="1" stop-color="#7C4636"/>
+    </linearGradient>
+    <linearGradient id="mantle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2F6F68"/>
+      <stop offset="1" stop-color="#1D2C47"/>
+    </linearGradient>
+    <pattern id="weave" width="36" height="36" patternUnits="userSpaceOnUse">
+      <rect width="36" height="36" fill="#263A5C"/>
+      <path d="M0 18 L18 0 L36 18 L18 36 Z" fill="none" stroke="#E4B04A" stroke-width="2.5" opacity=".8"/>
+      <path d="M9 18 L18 9 L27 18 L18 27 Z" fill="#C0603C" opacity=".8"/>
+      <circle cx="18" cy="18" r="2.5" fill="#F8F0E3"/>
+    </pattern>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".82" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".05"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="640" cy="170" r="74" fill="#F1E3C2" opacity=".92"/>
+  <circle cx="618" cy="158" r="70" fill="#2F5560" opacity=".55"/>
+  <g fill="#F8F0E3" opacity=".6">
+    <circle cx="120" cy="120" r="2.5"/><circle cx="220" cy="180" r="2"/><circle cx="330" cy="90" r="2.5"/>
+    <circle cx="500" cy="150" r="2"/><circle cx="710" cy="280" r="2"/><circle cx="90" cy="280" r="2"/>
+  </g>
+
+  <g opacity=".8">
+    <path d="M0 520 L160 330 L320 520 Z" fill="#1D2C47"/>
+    <path d="M200 540 L390 300 L580 540 Z" fill="#22344F"/>
+    <path d="M440 540 L620 350 L800 540 Z" fill="#1D2C47"/>
+    <path d="M340 380 L390 300 L440 380 L415 395 L390 378 L365 398 Z" fill="#E4B04A" opacity=".22"/>
+  </g>
+  <rect y="540" width="800" height="120" fill="#2F5560"/>
+  <g stroke="#E4B04A" stroke-opacity=".28" stroke-width="2">
+    <path d="M40 590 q70 10 140 0"/>
+    <path d="M250 620 q80 10 160 0"/>
+    <path d="M540 600 q70 8 140 0"/>
+  </g>
+  <path d="M0 660 Q200 620 400 640 T800 630 L800 1000 L0 1000 Z" fill="#211C2A"/>
+
+  <g>
+    <path d="M400 730 q-150 22 -190 270 l380 0 q-40 -248 -190 -270" fill="url(#mantle)"/>
+    <path d="M400 720 q-90 14 -120 120 q120 46 240 0 q-30 -106 -120 -120" fill="url(#weave)"/>
+    <path d="M400 740 q-60 10 -82 88 l164 0 q-22 -78 -82 -88" fill="#263A5C" opacity=".6"/>
+
+    <path d="M300 760 q-50 40 -60 140" fill="none" stroke="#7C4636" stroke-width="34" stroke-linecap="round"/>
+    <path d="M500 760 q50 40 60 140" fill="none" stroke="#7C4636" stroke-width="34" stroke-linecap="round"/>
+
+    <path d="M400 430 q-72 0 -72 92 l0 92 q0 90 72 90 q72 0 72 -90 l0 -92 q0 -92 -72 -92" fill="url(#skin)"/>
+    <path d="M336 500 q-22 10 -22 46 q0 30 24 34" fill="#8C5238"/>
+    <path d="M464 500 q22 10 22 46 q0 30 -24 34" fill="#8C5238"/>
+
+    <path d="M338 470 q62 -30 124 0 l-12 -64 q-50 -26 -100 0 z" fill="#1D2C47"/>
+    <path d="M350 456 q50 -20 100 0" fill="none" stroke="#E4B04A" stroke-width="7" stroke-linecap="round"/>
+
+    <g>
+      <path d="M356 404 q-24 -70 4 -130 q18 54 26 116" fill="#2F6F68"/>
+      <path d="M390 396 q-14 -92 14 -150 q14 66 16 148" fill="#E4B04A"/>
+      <path d="M426 400 q4 -86 34 -128 q2 62 -8 132" fill="#C0603C"/>
+      <path d="M454 414 q24 -56 54 -76 q-6 50 -30 92" fill="#2F6F68"/>
+      <path d="M330 420 q-30 -46 -36 -96 q30 36 50 94" fill="#C0603C"/>
+      <path d="M338 420 q-52 -20 -82 -58 q48 10 88 54" fill="#E4B04A"/>
+    </g>
+
+    <circle cx="374" cy="520" r="6" fill="#1D1A24"/>
+    <circle cx="426" cy="520" r="6" fill="#1D1A24"/>
+    <path d="M400 524 q-10 28 0 36 q10 -8 0 -36" fill="#6C3A2E"/>
+    <path d="M384 580 q16 10 32 0" fill="none" stroke="#1D1A24" stroke-width="4" stroke-linecap="round"/>
+    <path d="M350 552 q22 10 42 0" fill="none" stroke="#6C3A2E" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+    <path d="M408 552 q22 10 42 0" fill="none" stroke="#6C3A2E" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+
+    <circle cx="326" cy="548" r="20" fill="#E4B04A"/>
+    <circle cx="326" cy="548" r="9" fill="#C0603C"/>
+    <circle cx="474" cy="548" r="20" fill="#E4B04A"/>
+    <circle cx="474" cy="548" r="9" fill="#C0603C"/>
+    <path d="M318 612 q82 30 164 0" fill="none" stroke="#E4B04A" stroke-width="4" opacity=".65"/>
+  </g>
+
+  <g opacity=".55">
+    <path d="M110 760 q24 -90 -8 -150 q-14 66 -34 86 q26 12 42 64" fill="#2F6F68"/>
+    <path d="M680 780 q28 -88 -6 -146 q-14 64 -34 84 q26 12 40 62" fill="#2F6F68"/>
+  </g>
+
+  <rect width="800" height="1000" filter="url(#grain)" opacity=".55"/>
+</svg>

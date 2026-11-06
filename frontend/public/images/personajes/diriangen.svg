@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Diriangén, representación artística conceptual</title>
+  <desc id="desc">Retrato ilustrado de Diriangén con manto rojo geométrico, frente a volcanes al amanecer.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A2E45"/>
+      <stop offset=".45" stop-color="#8C4B45"/>
+      <stop offset=".75" stop-color="#C0603C"/>
+      <stop offset="1" stop-color="#E4B04A"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A85E3F"/>
+      <stop offset="1" stop-color="#7C4636"/>
+    </linearGradient>
+    <linearGradient id="mantle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A84A2F"/>
+      <stop offset="1" stop-color="#6C3240"/>
+    </linearGradient>
+    <pattern id="weave" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#8C3F32"/>
+      <path d="M0 20 L20 0 L40 20 L20 40 Z" fill="#A84A2F"/>
+      <path d="M10 20 L20 10 L30 20 L20 30 Z" fill="#E4B04A" opacity=".9"/>
+      <circle cx="20" cy="20" r="3" fill="#263A5C"/>
+    </pattern>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".82" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".05"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="170" cy="200" r="92" fill="#F3DFAF" opacity=".35"/>
+  <g fill="#F8F0E3" opacity=".55">
+    <circle cx="600" cy="120" r="2.5"/><circle cx="700" cy="200" r="2"/><circle cx="520" cy="230" r="2"/>
+    <circle cx="250" cy="90" r="2"/><circle cx="100" cy="330" r="2.5"/>
+  </g>
+
+  <g opacity=".8">
+    <path d="M0 520 L180 340 L360 520 Z" fill="#4A3340"/>
+    <path d="M520 520 L680 330 L840 520 Z" fill="#4A3340"/>
+    <path d="M620 380 L680 330 L740 380 L710 395 L680 378 L650 398 Z" fill="#E4B04A" opacity=".25"/>
+    <path d="M180 360 L180 520" stroke="#E4B04A" stroke-opacity=".25" stroke-width="3"/>
+  </g>
+
+  <path d="M0 600 Q200 560 400 580 T800 570 L800 1000 L0 1000 Z" fill="#211C2A"/>
+
+  <g>
+    <path d="M400 720 q-150 24 -190 280 l380 0 q-40 -256 -190 -280" fill="url(#mantle)"/>
+    <path d="M400 710 q-95 16 -124 128 q124 48 248 0 q-29 -112 -124 -128" fill="url(#weave)"/>
+    <path d="M400 735 q-66 10 -90 96 l180 0 q-24 -86 -90 -96" fill="#6C3240" opacity=".55"/>
+
+    <path d="M294 750 q-54 42 -64 150" fill="none" stroke="#7C4636" stroke-width="36" stroke-linecap="round"/>
+    <path d="M506 750 q54 42 64 150" fill="none" stroke="#7C4636" stroke-width="36" stroke-linecap="round"/>
+
+    <path d="M400 420 q-74 0 -74 96 l0 94 q0 92 74 92 q74 0 74 -92 l0 -94 q0 -96 -74 -96" fill="url(#skin)"/>
+    <path d="M334 496 q-24 12 -24 48 q0 30 26 34" fill="#8C5238"/>
+    <path d="M466 496 q24 12 24 48 q0 30 -26 34" fill="#8C5238"/>
+
+    <path d="M330 468 q70 -28 140 0 l-10 -50 q-60 -24 -120 0 z" fill="#E4B04A"/>
+    <path d="M340 454 q60 -18 120 0" fill="none" stroke="#8C3F32" stroke-width="8" stroke-linecap="round"/>
+    <path d="M356 440 l14 -14 l14 14 l-14 14 z" fill="#2F6F68"/>
+    <path d="M416 440 l14 -14 l14 14 l-14 14 z" fill="#2F6F68"/>
+
+    <g>
+      <path d="M340 430 q-32 -44 -44 -100 q34 34 58 94" fill="#263A5C"/>
+      <path d="M368 420 q-22 -66 -8 -126 q26 48 30 124" fill="#C0603C"/>
+      <path d="M402 416 q-6 -70 20 -118 q14 54 2 122" fill="#E4B04A"/>
+      <path d="M438 424 q18 -58 50 -84 q-8 50 -34 94" fill="#2F6F68"/>
+    </g>
+
+    <circle cx="372" cy="522" r="6" fill="#1D1A24"/>
+    <circle cx="428" cy="522" r="6" fill="#1D1A24"/>
+    <path d="M400 526 q-10 28 0 36 q10 -8 0 -36" fill="#6C3A2E"/>
+    <path d="M382 584 q18 8 36 0" fill="none" stroke="#1D1A24" stroke-width="4" stroke-linecap="round"/>
+    <path d="M350 556 q20 8 38 0" fill="none" stroke="#6C3A2E" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+    <path d="M412 556 q20 8 38 0" fill="none" stroke="#6C3A2E" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+
+    <circle cx="324" cy="552" r="20" fill="#E4B04A"/>
+    <circle cx="324" cy="552" r="9" fill="#C0603C"/>
+    <circle cx="476" cy="552" r="20" fill="#E4B04A"/>
+    <circle cx="476" cy="552" r="9" fill="#C0603C"/>
+
+    <path d="M250 700 q-30 -100 14 -170 q16 72 44 96 q-36 18 -58 74" fill="#2F6F68" opacity=".65"/>
+  </g>
+
+  <g opacity=".55">
+    <path d="M110 800 q26 -96 -10 -160 q-14 68 -36 88 q28 14 46 72" fill="#2F6F68"/>
+    <path d="M690 810 q26 -94 -10 -158 q-14 66 -36 86 q28 14 46 72" fill="#2F6F68"/>
+  </g>
+
+  <rect width="800" height="1000" filter="url(#grain)" opacity=".55"/>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">Xila Tradiciones</title>
+  <desc id="desc">Avatar del Robot Xila con detalles de fiesta popular, en tonos maize y terracota.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8F0E3"/>
+      <stop offset="1" stop-color="#EAD4B4"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFDF8"/>
+      <stop offset="1" stop-color="#E6D2B8"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".05"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <circle cx="300" cy="300" r="250" fill="#F3E6D2"/>
+  <circle cx="300" cy="300" r="250" fill="none" stroke="#C0603C" stroke-opacity=".45" stroke-width="4" stroke-dasharray="5 12"/>
+  <circle cx="300" cy="300" r="212" fill="none" stroke="#263A5C" stroke-opacity=".18" stroke-width="2"/>
+
+  <g opacity=".85">
+    <path d="M80 170 q50 -20 100 0 l-12 34 q-38 -12 -76 0 z" fill="#C0603C"/>
+    <path d="M180 190 q50 -20 100 0 l-12 34 q-38 -12 -76 0 z" fill="#E4B04A"/>
+    <path d="M420 150 q50 -20 100 0 l-12 34 q-38 -12 -76 0 z" fill="#2F6F68"/>
+    <path d="M400 185 q50 -20 100 0 l-12 34 q-38 -12 -76 0 z" fill="#C0603C"/>
+  </g>
+
+  <g>
+    <path d="M228 420 q-40 8 -44 54" fill="none" stroke="#263A5C" stroke-width="22" stroke-linecap="round"/>
+    <path d="M372 420 q40 8 44 54" fill="none" stroke="#263A5C" stroke-width="22" stroke-linecap="round"/>
+    <circle cx="186" cy="482" r="18" fill="#E4B04A" stroke="#263A5C" stroke-width="7"/>
+    <circle cx="414" cy="482" r="18" fill="#E4B04A" stroke="#263A5C" stroke-width="7"/>
+
+    <rect x="220" y="400" width="160" height="130" rx="48" fill="url(#body)" stroke="#263A5C" stroke-width="9"/>
+    <rect x="250" y="430" width="100" height="70" rx="24" fill="#A84A2F"/>
+    <path d="M268 448 l16 16 l-16 16 l16 16" fill="none" stroke="#E4B04A" stroke-width="5" stroke-linecap="round"/>
+    <path d="M306 448 l16 16 l-16 16 l16 16" fill="none" stroke="#E4B04A" stroke-width="5" stroke-linecap="round"/>
+    <path d="M336 448 l16 16 l-16 16 l16 16" fill="none" stroke="#F8F0E3" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+
+    <rect x="210" y="190" width="180" height="160" rx="56" fill="url(#body)" stroke="#263A5C" stroke-width="9"/>
+    <rect x="234" y="220" width="132" height="86" rx="36" fill="#1D2C47"/>
+    <circle cx="272" cy="262" r="13" fill="#E4B04A"/>
+    <circle cx="328" cy="262" r="13" fill="#E4B04A"/>
+    <circle cx="272" cy="262" r="5" fill="#FFFDF8"/>
+    <circle cx="328" cy="262" r="5" fill="#FFFDF8"/>
+    <path d="M282 284 q18 14 36 0" fill="none" stroke="#F8F0E3" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="210" cy="270" r="18" fill="#C0603C" stroke="#263A5C" stroke-width="7"/>
+    <circle cx="390" cy="270" r="18" fill="#C0603C" stroke="#263A5C" stroke-width="7"/>
+    <path d="M300 190 v-28" stroke="#263A5C" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="300" cy="146" r="14" fill="#E4B04A" stroke="#263A5C" stroke-width="7"/>
+    <path d="M248 188 q52 -22 104 0" fill="none" stroke="#2F6F68" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <g fill="#C0603C" opacity=".75">
+    <circle cx="120" cy="460" r="5"/><circle cx="480" cy="470" r="4"/><circle cx="470" cy="390" r="6"/>
+    <circle cx="130" cy="380" r="4"/>
+  </g>
+
+  <rect width="600" height="600" filter="url(#grain)" opacity=".5"/>
+</svg>
