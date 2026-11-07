@@ -9,11 +9,13 @@ import { cn } from "@/lib/utils";
 const LIMITE = 600;
 
 interface ChatComposerProps {
+  nombreAsistente: string;
   onEnviar: (texto: string) => void;
   deshabilitado?: boolean;
 }
 
 export function ChatComposer({
+  nombreAsistente,
   onEnviar,
   deshabilitado = false,
 }: ChatComposerProps) {
@@ -51,15 +53,15 @@ export function ChatComposer({
       }}
     >
       <div className="flex items-end gap-2 rounded-2xl border border-border bg-background p-2 focus-within:border-foreground/30 focus-within:ring-2 focus-within:ring-focus/30">
-        <label className="sr-only" htmlFor="mensaje-xila">
-          Escribí tu mensaje para Xila
+        <label className="sr-only" htmlFor="mensaje-chat">
+          Escribí tu mensaje para {nombreAsistente}
         </label>
         <textarea
           ref={textareaRef}
           aria-describedby="chat-aviso"
           autoComplete="off"
           className="max-h-[132px] min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted"
-          id="mensaje-xila"
+          id="mensaje-chat"
           maxLength={LIMITE}
           placeholder="Escribí una pregunta…"
           rows={1}

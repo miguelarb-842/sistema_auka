@@ -1,10 +1,11 @@
-import type { PerfilId } from "@/types/perfil.types";
 import type {
-  ContextoConversacion,
-  IntencionConversacion,
-  MotorConversacionXila,
-  ReglaRespuesta,
-  RespuestaXila,
+  ContenidoPorPerfil,
+  TemaConocido,
+} from "@/modules/museo/types/museo.types";
+import type {
+  EntradaChat,
+  MotorRespuestas,
+  RespuestaChat,
 } from "../types/chat.types";
 
 export function normalizarTexto(texto: string): string {
@@ -17,57 +18,72 @@ export function normalizarTexto(texto: string): string {
     .trim();
 }
 
-function contieneAlguna(texto: string, opciones: readonly string[]): boolean {
-  return opciones.some((opcion) => texto.includes(normalizarTexto(opcion)));
+function contieneAlguna(
+  textoNormalizado: string,
+  opciones: readonly string[],
+): boolean {
+  return opciones.some((opcion) =>
+    textoNormalizado.includes(normalizarTexto(opcion)),
+  );
 }
 
-function seleccionarRegla(
-  texto: string,
-  reglas: readonly ReglaRespuesta[],
-): ReglaRespuesta | undefined {
-  const normalizado = normalizarTexto(texto);
-
-  const coincidencias = reglas
-    .map((regla) => {
-      const puntaje = regla.palabrasClave.reduce((total, palabra) => {
+function seleccionarTema(
+  textoNormalizado: string,
+  temas: readonly TemaConocido[],
+): TemaConocido | undefined {
+  const coincidencias = temas
+    .map((tema) => {
+      const puntaje = tema.palabrasClave.reduce((total, palabra) => {
         const clave = normalizarTexto(palabra);
 
-        return normalizado.includes(clave) ? total + clave.length : total;
+        return textoNormalizado.includes(clave) ? total + clave.length : total;
       }, 0);
 
-      return { regla, puntaje };
+      return { tema, puntaje };
     })
     .filter((item) => item.puntaje > 0)
     .sort((a, b) => b.puntaje - a.puntaje);
 
-  return coincidencias[0]?.regla;
+  return coincidencias[0]?.tema;
 }
 
-const introduccionReto: Record<PerfilId, string> = {
+const introduccionReto: ContenidoPorPerfil = {
   nino: "¡Uy, me encantan los retos! Aquí va uno para pensar:",
   adolescente: "Va un reto para pensar en serio:",
   adulto: "Le propongo un ejercicio de análisis:",
 };
 
-const introduccionAyuda: Record<PerfilId, string> = {
-  nino: "Podés pedirme un reto, una pista, o preguntarme por los temas de esta sala. ¿Qué querés descubrir?",
+const introduccionAyuda: ContenidoPorPerfil = {
+  nino: "Podés pedirme un reto, una pista o preguntarme por los temas de esta conversación. ¿Qué querés descubrir?",
   adolescente:
-    "Puedo proponerte un reto, darte una pista sobre el último desafío o conversar sobre los contenidos de la sala. ¿Qué elegís?",
+    "Puedo proponerte un reto, darte una pista del último desafío o conversar sobre los temas disponibles. ¿Qué elegís?",
   adulto:
-    "Puede solicitar un reto, pedir una pista del ejercicio actual o consultar los ejes documentados de la sala. ¿Cómo desea continuar?",
+    "Puede solicitar un reto, pedir una pista del ejercicio actual o consultar los temas disponibles en esta conversación. ¿Cómo desea continuar?",
 };
 
-const sinRetoPrevio: Record<PerfilId, string> = {
-  nino: "Todavía no te propuse un reto. Escribí “reto” y te doy uno. ¿Te animás?",
+const sinRetoPrevio: ContenidoPorPerfil = {
+  nino: "Todavía no te propuse un reto. Escribí «reto» y te doy uno. ¿Te animás?",
   adolescente:
-    "Todavía no hay un reto activo. Pedime uno con la palabra “reto” y te doy una pista después.",
+    "Todavía no hay un reto activo. Pedime uno con la palabra «reto» y después te doy una pista.",
   adulto:
     "Aún no se ha planteado un reto en esta conversación. Solicítelo y luego podré ofrecerle una pista.",
 };
 
-export class SimuladorXila implements MotorConversacionXila {
-  responder(contexto: ContextoConversacion): RespuestaXila {
-    const { asistente, perfil, texto, indiceReto } = contexto;
+const sinRetosPreparados: ContenidoPorPerfil = {
+  nino: "Esta conversación todavía no tiene retos preparados. Podés seguir preguntando por la información disponible.",
+  adolescente:
+    "Esta conversación no tiene retos preparados por ahora. Podés seguir consultando los temas disponibles.",
+  adulto:
+    "Esta conversación no dispone de retos preparados en este momento. Puede continuar consultando los temas disponibles.",
+};
+
+export class SimuladorRespuestas implements MotorRespuestas {
+  async responder({
+    config,
+    perfil,
+    texto,
+    indiceReto,
+  }: EntradaChat): Promise<RespuestaChat> {
     const normalizado = normalizarTexto(texto);
 
     if (!normalizado) {
@@ -75,32 +91,31 @@ export class SimuladorXila implements MotorConversacionXila {
         contenido: introduccionAyuda[perfil],
         tipo: "texto",
         siguienteIndiceReto: indiceReto,
-        intencion: "ayuda",
       };
     }
 
     if (
       contieneAlguna(normalizado, ["reto", "desafio", "desafío", "ejercicio"])
     ) {
-      const retosPerfil = asistente.retos[perfil];
+      const retosPerfil = config.retos?.[perfil] ?? [];
 
-      if (retosPerfil.length > 0) {
-        const indice = indiceReto % retosPerfil.length;
-        const reto = retosPerfil[indice];
-
+      if (retosPerfil.length === 0) {
         return {
-          contenido: introduccionReto[perfil],
-          tipo: "reto",
-          reto: {
-            id: reto.id,
-            titulo: reto.titulo,
-            enunciado: reto.enunciado,
-            pista: reto.pista,
-          },
-          siguienteIndiceReto: indiceReto + 1,
-          intencion: "reto",
+          contenido: sinRetosPreparados[perfil],
+          tipo: "texto",
+          siguienteIndiceReto: indiceReto,
         };
       }
+
+      const indice = indiceReto % retosPerfil.length;
+      const reto = retosPerfil[indice];
+
+      return {
+        contenido: introduccionReto[perfil],
+        tipo: "reto",
+        reto,
+        siguienteIndiceReto: indiceReto + 1,
+      };
     }
 
     if (
@@ -112,16 +127,16 @@ export class SimuladorXila implements MotorConversacionXila {
         "no entiendo",
       ])
     ) {
-      if (indiceReto <= 0) {
+      const retosPerfil = config.retos?.[perfil] ?? [];
+
+      if (indiceReto <= 0 || retosPerfil.length === 0) {
         return {
           contenido: sinRetoPrevio[perfil],
           tipo: "texto",
           siguienteIndiceReto: indiceReto,
-          intencion: "pista",
         };
       }
 
-      const retosPerfil = asistente.retos[perfil];
       const retoAnterior = retosPerfil[(indiceReto - 1) % retosPerfil.length];
 
       return {
@@ -131,28 +146,41 @@ export class SimuladorXila implements MotorConversacionXila {
             : `Pista del ejercicio «${retoAnterior.titulo}»: ${retoAnterior.pista}`,
         tipo: "texto",
         siguienteIndiceReto: indiceReto,
-        intencion: "pista",
       };
     }
 
-    const regla = seleccionarRegla(texto, asistente.reglas);
-
-    if (regla) {
+    /*
+     * Los temas desconocidos se evalúan antes que los conocidos.
+     * Así una pregunta por precios, fechas, biografías o repertorios no
+     * recibe una respuesta temática que podría sonar a dato verificado.
+     */
+    if (contieneAlguna(normalizado, config.conocimiento.temasNoConocidos)) {
       return {
-        contenido: regla.respuestas[perfil],
+        contenido: config.conocimiento.respuestaDesconocido[perfil],
         tipo: "texto",
         siguienteIndiceReto: indiceReto,
-        intencion: regla.intencion,
+      };
+    }
+
+    const tema = seleccionarTema(
+      normalizado,
+      config.conocimiento.temasConocidos,
+    );
+
+    if (tema) {
+      return {
+        contenido: tema.respuesta[perfil],
+        tipo: "texto",
+        siguienteIndiceReto: indiceReto,
       };
     }
 
     return {
-      contenido: asistente.fallback[perfil],
+      contenido: config.conocimiento.respuestaDesconocido[perfil],
       tipo: "texto",
       siguienteIndiceReto: indiceReto,
-      intencion: "fuera-de-tema" satisfies IntencionConversacion,
     };
   }
 }
 
-export const simuladorXila: MotorConversacionXila = new SimuladorXila();
+export const motorRespuestas: MotorRespuestas = new SimuladorRespuestas();

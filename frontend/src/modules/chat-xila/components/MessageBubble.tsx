@@ -1,25 +1,49 @@
 "use client";
 
-import type { AsistenteXila, Mensaje } from "../types/chat.types";
+import type { ConfigChat } from "@/modules/museo/types/museo.types";
+import type { Mensaje } from "../types/chat.types";
 
 import Image from "next/image";
-import { Lightbulb, Sparkles, Trophy } from "lucide-react";
+import { CircleHelp, Lightbulb, Trophy } from "lucide-react";
 import { Button } from "@heroui/react";
 
 import { cn, formatearHora } from "@/lib/utils";
 
 interface MessageBubbleProps {
   mensaje: Mensaje;
-  asistente: AsistenteXila;
+  config: ConfigChat;
   onPedirPista: () => void;
+}
+
+function iniciales(nombre: string): string {
+  return nombre
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((parte) => parte.charAt(0).toUpperCase())
+    .join("");
 }
 
 export function MessageBubble({
   mensaje,
-  asistente,
+  config,
   onPedirPista,
 }: MessageBubbleProps) {
   const esVisitante = mensaje.autor === "visitante";
+
+  if (mensaje.tipo === "sistema") {
+    return (
+      <p
+        className="mx-auto flex max-w-md items-start gap-2 rounded-xl border border-warning/30 bg-warning-soft/40 px-3 py-2 text-xs leading-relaxed text-muted"
+        role="status"
+      >
+        <CircleHelp
+          aria-hidden="true"
+          className="mt-0.5 size-3.5 shrink-0 text-warning"
+        />
+        {mensaje.contenido}
+      </p>
+    );
+  }
 
   return (
     <article
@@ -29,16 +53,25 @@ export function MessageBubble({
       )}
     >
       {!esVisitante ? (
-        <div className="relative mt-1 size-8 shrink-0 overflow-hidden rounded-xl border border-border bg-background">
-          <Image
-            fill
-            alt=""
+        config.avatar ? (
+          <div className="relative mt-1 size-8 shrink-0 overflow-hidden rounded-xl border border-border bg-background">
+            <Image
+              fill
+              alt=""
+              aria-hidden="true"
+              className="object-cover"
+              sizes="32px"
+              src={config.avatar}
+            />
+          </div>
+        ) : (
+          <div
             aria-hidden="true"
-            className="object-cover"
-            sizes="32px"
-            src={asistente.avatar}
-          />
-        </div>
+            className="mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-border bg-surface-secondary font-mono text-[0.65rem] font-semibold text-muted"
+          >
+            {iniciales(config.nombreVisible)}
+          </div>
+        )
       ) : null}
 
       <div
@@ -92,10 +125,9 @@ export function MessageBubble({
             esVisitante ? "justify-end" : "justify-start",
           )}
         >
-          {!esVisitante ? (
-            <Sparkles aria-hidden="true" className="size-2.5" />
-          ) : null}
-          <span>{esVisitante ? "Vos" : "Xila"}</span>
+          <span className="max-w-[14rem] truncate">
+            {esVisitante ? "Vos" : config.nombreVisible}
+          </span>
           <span aria-hidden="true">·</span>
           <time dateTime={new Date(mensaje.timestamp).toISOString()}>
             {formatearHora(mensaje.timestamp)}

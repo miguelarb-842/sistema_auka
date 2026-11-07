@@ -10,51 +10,61 @@ import {
   Trophy,
 } from "lucide-react";
 
-import { AsistenteCard } from "../components/AsistenteCard";
-import { getAsistentes } from "../services/asistentes.service";
+import { ChatOpcionCard } from "../components/ChatOpcionCard";
 
 import { Breadcrumbs } from "@/components/ui/molecules/Breadcrumbs";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
+import {
+  getFichasConChat,
+  getGuiaGeneral,
+  getMuseo,
+  getSalasConAgente,
+} from "@/modules/museo/services/museo.service";
+import { AgrupacionCard } from "@/modules/personajes/components/AgrupacionCard";
+import { PersonajeCard } from "@/modules/personajes/components/PersonajeCard";
 
 const claves = [
-  {
-    icono: Bot,
-    titulo: "Respuestas locales",
-    descripcion:
-      "Xila no consulta internet ni un modelo de lenguaje. Sus respuestas están escritas y organizadas para cada sala.",
-  },
   {
     icono: CircleHelp,
     titulo: "Preguntas sugeridas",
     descripcion:
-      "Podés empezar con una sugerencia o escribir tu propia pregunta. Si el tema no está en la sala, Xila lo dice.",
+      "Podés elegir una sugerencia o escribir tu propia pregunta. Si el tema no está disponible, se indica como por verificar.",
   },
   {
     icono: Trophy,
     titulo: "Retos con pistas",
     descripcion:
-      "Cada asistente propone retos adaptados a tu perfil. Podés pedir una pista sin recibir la respuesta de inmediato.",
+      "Cada conversación propone retos adaptados a tu perfil. Podés pedir una pista sin recibir la respuesta de inmediato.",
   },
   {
     icono: ShieldCheck,
-    titulo: "Límites visibles",
+    titulo: "Contenido identificado",
     descripcion:
-      "La conversación está marcada como simulación. No se guarda en un servidor ni se presenta como una fuente histórica.",
+      "Las voces están identificadas como representación educativa o agrupación invitada. No se presentan como citas reales.",
+  },
+  {
+    icono: Lightbulb,
+    titulo: "Límites claros",
+    descripcion:
+      "No se inventan biografías, fechas, obras, repertorios, integrantes, horarios ni precios. La información está por verificar.",
   },
 ] as const;
 
 export function ChatSelectorPage() {
-  const asistentes = getAsistentes();
+  const guia = getGuiaGeneral();
+  const salasConAgente = getSalasConAgente();
+  const fichas = getFichasConChat();
+  const museo = getMuseo();
 
   return (
     <div className="auka-container pb-16 pt-6 sm:pb-20">
-      <Breadcrumbs items={[{ label: "Chat Xila" }]} />
+      <Breadcrumbs items={[{ label: "Conversaciones" }]} />
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
         <SectionHeading
           as="h1"
-          description="Tres versiones de Xila, una por sala. Cada una tiene su propio tono, sus preguntas sugeridas y sus retos. Elegí una para empezar la conversación."
+          description={`La guía general, los agentes de sala y las voces con conversación propia de la instalación simulada del Sistema Auka en el ${museo.nombre}. Elegí una conversación para empezar.`}
           eyebrow="Conversación educativa"
           title="¿Con quién querés conversar?"
         />
@@ -62,20 +72,76 @@ export function ChatSelectorPage() {
         <InfoCallout
           className="lg:mb-1"
           icon={<Sparkles aria-hidden="true" className="size-4" />}
-          title="Una simulación, no una IA"
+          title="Una simulación identificada"
           tono="accent"
         >
-          Xila funciona con un motor local de respuestas predefinidas. No hay
-          inteligencia artificial real, ni backend, ni envío de datos. Si algo
-          no está en la sala, prefiere decirlo antes que inventarlo.
+          Esta app simula la instalación del Sistema Auka en el {museo.nombre}.
+          Todo el contenido está marcado como demostrativo y por verificar. Las
+          respuestas se apoyan en el conocimiento local de cada conversación y
+          en el agente configurado.
         </InfoCallout>
       </div>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {asistentes.map((asistente) => (
-          <AsistenteCard key={asistente.id} asistente={asistente} />
-        ))}
-      </div>
+      <section className="mt-12">
+        <SectionHeading
+          eyebrow="Guía general"
+          title="Empezá por el panorama completo"
+        />
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <ChatOpcionCard
+            config={guia}
+            contexto="Orientación por todas las salas del museo"
+            href="/chat/guia-general"
+          />
+          <InfoCallout
+            className="self-start"
+            icon={<Bot aria-hidden="true" className="size-4" />}
+            title="Qué puede hacer la guía"
+            tono="info"
+          >
+            Orientarte por las salas, explicar dónde está el Agente Xila y
+            derivarte a los personajes y a la agrupación invitada. La guía no
+            encarna a ningún personaje y no inventa datos sobre el museo.
+          </InfoCallout>
+        </div>
+      </section>
+
+      <section className="mt-16">
+        <SectionHeading
+          description={`${salasConAgente.length} salas tienen un Agente Xila con conversación propia. En las demás salas no se muestra indicador de robot.`}
+          eyebrow="Agentes de sala"
+          title="Agente Xila · una voz por sala"
+        />
+        <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {salasConAgente.map((sala) =>
+            sala.agenteXilaUbicado ? (
+              <ChatOpcionCard
+                key={sala.id}
+                config={sala.agenteXilaUbicado}
+                contexto={`Sala: ${sala.nombre}`}
+                href={`/chat/sala/${sala.id}`}
+              />
+            ) : null,
+          )}
+        </div>
+      </section>
+
+      <section className="mt-16">
+        <SectionHeading
+          description="Personajes y agrupación invitada con conversación propia. Cada ficha indica su etiqueta de representación y el estado de su contenido."
+          eyebrow="Voces del museo"
+          title="Personajes y agrupación invitada"
+        />
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {fichas.map((ficha) =>
+            ficha.tipo === "agrupacion" ? (
+              <AgrupacionCard key={ficha.id} agrupacion={ficha} />
+            ) : (
+              <PersonajeCard key={ficha.id} personaje={ficha} />
+            ),
+          )}
+        </div>
+      </section>
 
       <section className="mt-16">
         <SectionHeading
@@ -114,7 +180,7 @@ export function ChatSelectorPage() {
               <Lightbulb aria-hidden="true" className="size-5" />
             </span>
             <div>
-              <p className="text-sm font-semibold">Adaptá el tono de Xila</p>
+              <p className="text-sm font-semibold">Adaptá el tono</p>
               <p className="mt-1 text-xs leading-relaxed text-muted">
                 Cambiá tu perfil para recibir explicaciones y retos adecuados a
                 tu edad. La conversación se reinicia con el nuevo tono.

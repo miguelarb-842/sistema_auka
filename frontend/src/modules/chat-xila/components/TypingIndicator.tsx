@@ -1,4 +1,4 @@
-export function TypingIndicator() {
+export function TypingIndicator({ nombre }: { nombre: string }) {
   return (
     <div className="flex items-start gap-3" role="status">
       <div className="mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-border bg-surface">
@@ -9,9 +9,9 @@ export function TypingIndicator() {
         </span>
       </div>
       <div className="rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3.5">
-        <span className="sr-only">Xila está escribiendo</span>
+        <span className="sr-only">{nombre} está preparando una respuesta</span>
         <span className="text-xs font-medium text-muted">
-          Xila está pensando…
+          {nombre} está pensando…
         </span>
       </div>
     </div>

@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { ChatSelectorPage } from "@/modules/chat-xila/pages/ChatSelectorPage";
 
 export const metadata: Metadata = {
-  title: "Chat Xila",
+  title: "Conversaciones",
   description:
-    "Elegí uno de los tres asistentes Xila para conversar sobre las salas del museo digital. Simulación local con respuestas preparadas.",
+    "Elegí la guía general, un Agente Xila de sala o una conversación con personajes y agrupación invitada. Simulación educativa con contenido por verificar.",
 };
 
 export default function Page() {
