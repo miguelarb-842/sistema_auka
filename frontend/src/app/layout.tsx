@@ -5,40 +5,44 @@ import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { PublicLayout } from "@/components/ui/templates/PublicLayout";
+import { getMuseo } from "@/modules/museo/services/museo.service";
 
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const museo = getMuseo();
+const tituloSitio = `${siteConfig.name} · ${museo.nombre}`;
+const descripcionSitio = `Simulación de la instalación de ${siteConfig.name} en el ${museo.nombre}. ${siteConfig.description}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteConfig.name} · Robot Xila`,
+    default: tituloSitio,
     template: `%s · ${siteConfig.name}`,
   },
-  description: siteConfig.description,
+  description: descripcionSitio,
   applicationName: siteConfig.name,
   authors: [{ name: siteConfig.author }],
   keywords: [
-    "Nicaragua",
-    "museo digital",
-    "educación",
-    "historia",
-    "patrimonio",
-    "Xila",
+    "museo",
     "Sistema Auka",
+    museo.nombre,
+    "Nicaragua",
+    "educación",
+    "patrimonio",
+    "Agente Xila",
   ],
   openGraph: {
     type: "website",
     locale: "es_NI",
-    title: `${siteConfig.name} · Robot Xila`,
-    description: siteConfig.description,
+    title: tituloSitio,
+    description: descripcionSitio,
     siteName: siteConfig.name,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} · Robot Xila`,
-    description: siteConfig.description,
+    title: tituloSitio,
+    description: descripcionSitio,
   },
 };
 
@@ -57,13 +61,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning className={fontSans.variable} lang="es">
+    <html suppressHydrationWarning className={fontSans.variable} lang="es-NI">
       <head>
         <script dangerouslySetInnerHTML={{ __html: scriptPreferencias }} />
       </head>
       <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
         <Providers>
-          <PublicLayout>{children}</PublicLayout>
+          <PublicLayout etiquetaInstalacion={museo.etiquetaInstalacion}>
+            {children}
+          </PublicLayout>
         </Providers>
       </body>
     </html>

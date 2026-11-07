@@ -92,6 +92,13 @@ body {
   background-size: 2.5rem 2.5rem;
 }
 
+.auka-pattern-light {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+}
+
 .auka-dots {
   background-image: radial-gradient(
     color-mix(in oklch, var(--foreground) 9%, transparent) 1px,
@@ -255,9 +262,165 @@ body {
   animation-delay: 240ms;
 }
 
+/*
+ * Holo Card local: inclinación 3D, textura y brillo que sigue al puntero.
+ * La API imita las capas de HeroUI Pro sin requerir su licencia.
+ */
+.holo-card {
+  --holo-card-radius: 1.5rem;
+  --holo-card-perspective: 900px;
+  --holo-card-gradient: linear-gradient(145deg, #1b1b21, #09090b);
+  --holo-card-inset-color: rgb(255 255 255 / 0.1);
+  --holo-card-pattern: repeating-linear-gradient(
+    115deg,
+    rgb(255 255 255 / 0.09) 0 1px,
+    transparent 1px 8px
+  );
+  --holo-card-pattern-size: auto;
+  --holo-card-pattern-opacity: 0.55;
+  --holo-card-shine-pattern: linear-gradient(
+    115deg,
+    transparent 8%,
+    rgb(255 255 255 / 0.28) 18%,
+    rgb(255 0 153 / 0.16) 28%,
+    rgb(0 229 255 / 0.2) 38%,
+    rgb(255 230 0 / 0.14) 48%,
+    transparent 60%
+  );
+  --holo-card-shine-opacity: 1;
+  --holo-card-texture-opacity: 0.14;
+  --holo-pointer-x: 50%;
+  --holo-pointer-y: 50%;
+  --holo-rotate-x: 0deg;
+  --holo-rotate-y: 0deg;
+  --holo-scale: 1;
+  --holo-parallax-x: 0px;
+  --holo-parallax-y: 0px;
+  position: relative;
+  perspective: var(--holo-card-perspective);
+}
+
+.holo-card__rotator {
+  transform: rotateX(var(--holo-rotate-x)) rotateY(var(--holo-rotate-y))
+    scale(var(--holo-scale));
+  transform-origin: center;
+  transform-style: flat;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.holo-card[data-active="true"] .holo-card__rotator {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.holo-card[data-active="false"] .holo-card__rotator {
+  transition-duration: 520ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.holo-card__frame {
+  height: 100%;
+}
+
+.holo-card__surface {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--holo-card-radius);
+  background: var(--holo-card-gradient);
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.holo-card__image {
+  z-index: 0;
+  object-fit: cover;
+}
+
+.holo-card__pattern {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--holo-card-pattern);
+  background-size: var(--holo-card-pattern-size);
+  opacity: var(--holo-card-pattern-opacity);
+}
+
+.holo-card__content {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  transform: translate3d(var(--holo-parallax-x), var(--holo-parallax-y), 0);
+}
+
+.holo-card__shine {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      circle at var(--holo-pointer-x) var(--holo-pointer-y),
+      rgb(255 255 255 / 0.32),
+      transparent 38%
+    ),
+    var(--holo-card-shine-pattern);
+  background-position:
+    center,
+    var(--holo-pointer-x) var(--holo-pointer-y);
+  background-size:
+    auto,
+    210% 210%;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 260ms ease-out;
+}
+
+.holo-card[data-active="true"] .holo-card__shine {
+  opacity: var(--holo-card-shine-opacity);
+}
+
+.holo-card__shine-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: var(--holo-card-pattern);
+  background-size: var(--holo-card-pattern-size);
+  opacity: var(--holo-card-texture-opacity);
+  -webkit-mask-image: radial-gradient(
+    circle at var(--holo-pointer-x) var(--holo-pointer-y),
+    black,
+    transparent 55%
+  );
+  mask-image: radial-gradient(
+    circle at var(--holo-pointer-x) var(--holo-pointer-y),
+    black,
+    transparent 55%
+  );
+}
+
+.holo-card__inset {
+  position: absolute;
+  z-index: 4;
+  inset: 0.5rem;
+  pointer-events: none;
+  border: 1px solid var(--holo-card-inset-color);
+  border-radius: calc(var(--holo-card-radius) - 0.35rem);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .holo-card__rotator {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .holo-card__shine {
+    display: none;
   }
 
   *,

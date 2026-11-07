@@ -1,21 +1,27 @@
 import Image from "next/image";
 import {
   ArrowRight,
-  BookOpen,
+  Landmark,
   MessageCircleQuestion,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
-
-const preguntas = [
-  "¿Qué celebramos y por qué?",
-  "¿Quién escribe la historia?",
-  "¿Qué significa resistir?",
-] as const;
+import {
+  getFichasConChat,
+  getGuiaGeneral,
+  getMuseo,
+  getSalas,
+  getSalasConAgente,
+} from "@/modules/museo/services/museo.service";
 
 export function HomeHero() {
+  const museo = getMuseo();
+  const salas = getSalas();
+  const salasConAgente = getSalasConAgente();
+  const fichas = getFichasConChat();
+  const preguntas = getGuiaGeneral().preguntasSugeridas.adolescente.slice(0, 3);
+
   return (
     <section className="relative overflow-hidden border-b border-separator">
       <div
@@ -34,16 +40,17 @@ export function HomeHero() {
                 <span className="absolute inline-flex size-full animate-auka-pulse rounded-full bg-accent" />
                 <span className="relative inline-flex size-2 rounded-full bg-accent" />
               </span>
-              Museo digital educativo · Nicaragua
+              Recorrido por el museo
             </p>
             <h1 className="mt-5 text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
               La historia se piensa,
               <span className="mt-1 block text-accent">no se copia.</span>
             </h1>
             <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Un museo digital para recorrer Nicaragua, conversar con Xila y
-              aprender a hacer preguntas. Tres salas demostrativas, tres
-              asistentes y una regla: no inventar la historia.
+              Recorré las {salas.length} salas del {museo.nombre}, conocé a sus
+              personajes y conversá con la guía general o con el Agente Xila
+              donde está disponible. Todo el contenido está marcado como
+              demostrativo y por verificar.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -53,25 +60,25 @@ export function HomeHero() {
               </ButtonLink>
               <ButtonLink href="/chat" size="lg" variant="outline">
                 <MessageCircleQuestion aria-hidden="true" className="size-4" />
-                Hablar con Xila
+                Empezar a conversar
               </ButtonLink>
             </div>
 
             <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted">
               <li className="inline-flex items-center gap-1.5">
-                <ShieldCheck
+                <Landmark aria-hidden="true" className="size-4 text-accent" />
+                {salas.length} salas para recorrer
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <Sparkles aria-hidden="true" className="size-4 text-warning" />
+                {salasConAgente.length} agentes Xila en sala
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <MessageCircleQuestion
                   aria-hidden="true"
                   className="size-4 text-success"
                 />
-                Sin backend ni IA real
-              </li>
-              <li className="inline-flex items-center gap-1.5">
-                <BookOpen aria-hidden="true" className="size-4 text-accent" />
-                Contenido introductorio
-              </li>
-              <li className="inline-flex items-center gap-1.5">
-                <Sparkles aria-hidden="true" className="size-4 text-warning" />3
-                perfiles de visita
+                {fichas.length} voces con chat
               </li>
             </ul>
           </div>
@@ -85,7 +92,7 @@ export function HomeHero() {
               <div className="auka-image-frame relative overflow-hidden rounded-[2.5rem] border border-border bg-surface-secondary shadow-xl shadow-black/5">
                 <Image
                   priority
-                  alt="Ilustración conceptual de Xila, un robot educativo con detalles geométricos inspirados en la cerámica nicaragüense."
+                  alt="Ilustración conceptual del Agente Xila, con detalles geométricos inspirados en la cerámica nicaragüense."
                   className="h-auto w-full"
                   height={900}
                   sizes="(max-width: 1024px) 90vw, 440px"
@@ -96,27 +103,17 @@ export function HomeHero() {
                   <div className="flex items-end justify-between gap-3">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/70">
-                        Robot educativo
+                        Agente Xila
                       </p>
                       <p className="mt-1 text-xl font-semibold text-white">
-                        Xila
+                        Ilustración conceptual
                       </p>
                     </div>
                     <span className="rounded-full border border-white/25 bg-black/25 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-white/80 backdrop-blur">
-                      Personificación
+                      Representación
                     </span>
                   </div>
                 </div>
-              </div>
-
-              <div className="absolute -left-3 top-6 rotate-[-3deg] rounded-2xl border border-border bg-background/95 px-4 py-3 shadow-lg backdrop-blur sm:-left-6">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">
-                  Modo de la app
-                </p>
-                <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold">
-                  <span className="size-2 rounded-full bg-success" />
-                  Demostración local
-                </p>
               </div>
             </div>
           </div>

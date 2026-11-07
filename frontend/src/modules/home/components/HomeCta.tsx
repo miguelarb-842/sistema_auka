@@ -1,8 +1,17 @@
 import { ArrowRight, MessageCircleQuestion } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
+import {
+  getFichasConChat,
+  getMuseo,
+  getSalas,
+} from "@/modules/museo/services/museo.service";
 
 export function HomeCta() {
+  const museo = getMuseo();
+  const salas = getSalas();
+  const fichas = getFichasConChat();
+
   return (
     <section className="auka-container py-16 sm:py-20">
       <div className="relative overflow-hidden rounded-[2rem] border border-border bg-foreground px-6 py-12 text-background sm:px-12 sm:py-16">
@@ -30,12 +39,12 @@ export function HomeCta() {
               Empezá cuando quieras
             </p>
             <h2 className="mt-4 max-w-2xl text-balance text-3xl font-semibold leading-tight tracking-[-0.03em] sm:text-4xl lg:text-5xl">
-              Traé una pregunta. Xila pone el resto del recorrido.
+              Traé una pregunta. El museo pone el recorrido.
             </h2>
             <p className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-background/70 sm:text-base">
-              Podés entrar por una sala, conocer a un personaje o conversar
-              directamente con uno de los tres asistentes. No necesitás cuenta
-              ni conexión a un servicio de inteligencia artificial.
+              Recorré las {salas.length} salas del {museo.nombre}, conocé a las{" "}
+              {fichas.length} voces con chat o empezá por la guía general. No
+              necesitás cuenta.
             </p>
           </div>
 
@@ -56,7 +65,7 @@ export function HomeCta() {
               variant="outline"
             >
               <MessageCircleQuestion aria-hidden="true" className="size-4" />
-              Hablar con Xila
+              Empezar a conversar
             </ButtonLink>
           </div>
         </div>

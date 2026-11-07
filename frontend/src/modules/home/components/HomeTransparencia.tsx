@@ -1,4 +1,4 @@
-import { BookCheck, FlaskConical, Scale, ShieldAlert } from "lucide-react";
+import { BookCheck, CircleHelp, Scale, ShieldAlert } from "lucide-react";
 
 import { ContentBadge } from "@/components/ui/molecules/ContentBadge";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
@@ -7,21 +7,21 @@ import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 const criterios = [
   {
     estado: "documentado" as const,
-    titulo: "Lo que sabemos",
+    titulo: "Lo que está documentado",
     descripcion:
-      "Datos generales y referencias que el proyecto puede sostener con la documentación disponible.",
+      "Reservado para la información que el museo valide con documentación. En esta simulación no hay contenido marcado como documentado.",
   },
   {
     estado: "interpretacion" as const,
-    titulo: "Lo que pensamos",
+    titulo: "Lo que se interpreta",
     descripcion:
-      "Lecturas, preguntas y análisis que proponemos como interpretación, nunca como hechos cerrados.",
+      "Reservado para lecturas y análisis del equipo del museo. Esta simulación no las inventa ni las presenta como hechos.",
   },
   {
     estado: "demostrativo" as const,
-    titulo: "Lo que estamos probando",
+    titulo: "Lo que se está demostrando",
     descripcion:
-      "Contenido introductorio de este prototipo, pendiente de validación, fuentes específicas y trabajo de campo.",
+      "Estado actual de todo el contenido: introductorio, marcado y pendiente de verificación por el equipo del museo.",
   },
 ];
 
@@ -32,7 +32,7 @@ export function HomeTransparencia() {
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
           <div>
             <SectionHeading
-              description="La historia no se inventa para que una experiencia sea más divertida. Este prototipo marca sus límites de forma visible y prefiere decir «no lo sé» antes que rellenar un vacío con una cita falsa."
+              description="La historia no se inventa para que una experiencia sea más entretenida. Esta simulación marca sus límites de forma visible y prefiere decir «no lo sé» antes que rellenar un vacío con una cita falsa."
               eyebrow="Transparencia"
               title="Distinguir lo documentado de lo imaginado"
             />
@@ -61,13 +61,13 @@ export function HomeTransparencia() {
 
             <InfoCallout
               icon={<ShieldAlert aria-hidden="true" className="size-4" />}
-              title="Contenido demostrativo"
+              title="Contenido demostrativo y por verificar"
               tono="warning"
             >
-              Las salas, personajes y conversaciones son introductorios. No
-              sustituyen una investigación histórica, una visita escolar guiada
-              ni una validación institucional. La personificación de Xila está
-              siempre marcada como dramatización educativa.
+              No se presentan biografías, fechas, obras, repertorios,
+              integrantes, horarios ni precios como datos verificados. Las
+              conversaciones con personajes y agrupaciones son representaciones
+              educativas, no citas reales ni testimonios.
             </InfoCallout>
 
             <div className="flex flex-wrap gap-4 text-xs text-muted">
@@ -77,14 +77,11 @@ export function HomeTransparencia() {
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Scale aria-hidden="true" className="size-4 text-warning" />
-                Interpretaciones señaladas
+                Etiquetas visibles
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <FlaskConical
-                  aria-hidden="true"
-                  className="size-4 text-accent"
-                />
-                Prototipo en revisión
+                <CircleHelp aria-hidden="true" className="size-4 text-accent" />
+                Todo por verificar
               </span>
             </div>
           </div>

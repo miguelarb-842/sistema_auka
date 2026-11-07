@@ -1,6 +1,9 @@
 import type { Sala } from "../types/sala.types";
 
-import { salas } from "../data/salas.data";
+import {
+  getSalaById as getSalaByIdMuseo,
+  getSalas as getSalasMuseo,
+} from "@/modules/museo/services/museo.service";
 
 export interface SalasRepository {
   obtenerTodas(): readonly Sala[];
@@ -18,13 +21,14 @@ function normalizar(valor: string): string {
 
 export const salasRepository: SalasRepository = {
   obtenerTodas() {
-    return salas;
+    return getSalasMuseo();
   },
   obtenerPorId(id) {
-    return salas.find((sala) => sala.id === id);
+    return getSalaByIdMuseo(id);
   },
   buscar(termino) {
     const consulta = normalizar(termino);
+    const salas = getSalasMuseo();
 
     if (!consulta) {
       return salas;
@@ -33,12 +37,9 @@ export const salasRepository: SalasRepository = {
     return salas.filter((sala) => {
       const contenido = [
         sala.nombre,
-        sala.tema,
-        sala.resumen,
+        sala.descripcion.nino,
         sala.descripcion.adolescente,
-        ...sala.bloques.map(
-          (bloque) => `${bloque.titulo} ${bloque.contenido.adolescente}`,
-        ),
+        sala.descripcion.adulto,
       ].join(" ");
 
       return normalizar(contenido).includes(consulta);
@@ -54,8 +55,8 @@ export function getSalaById(id: string): Sala | undefined {
   return salasRepository.obtenerPorId(id);
 }
 
-export function getSalasDestacadas(): readonly Sala[] {
-  return salasRepository.obtenerTodas().slice(0, 3);
+export function getSalasDestacadas(cantidad = 6): readonly Sala[] {
+  return salasRepository.obtenerTodas().slice(0, cantidad);
 }
 
 export function buscarSalas(termino: string): readonly Sala[] {

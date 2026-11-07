@@ -1,13 +1,25 @@
-import type { SalaId } from "@/types/ids.types";
-import type { Personaje } from "../types/personaje.types";
+import type { AgrupacionInvitada, Personaje } from "../types/personaje.types";
 
-import { personajes } from "../data/personajes.data";
+import {
+  getAgrupacionById as getAgrupacionByIdMuseo,
+  getAgrupacionesInvitadas as getAgrupacionesInvitadasMuseo,
+  getAgrupacionesPorSala as getAgrupacionesPorSalaMuseo,
+  getFichasConChat as getFichasConChatMuseo,
+  getPersonajeById as getPersonajeByIdMuseo,
+  getPersonajes as getPersonajesMuseo,
+  getPersonajesPorSala as getPersonajesPorSalaMuseo,
+} from "@/modules/museo/services/museo.service";
+
+export type FichaConChat = Personaje | AgrupacionInvitada;
 
 export interface PersonajesRepository {
   obtenerTodos(): readonly Personaje[];
   obtenerPorId(id: string): Personaje | undefined;
-  obtenerPorSala(salaId: SalaId): readonly Personaje[];
-  buscar(termino: string): readonly Personaje[];
+  obtenerPorSala(salaId: string): readonly Personaje[];
+  obtenerAgrupaciones(): readonly AgrupacionInvitada[];
+  obtenerAgrupacionPorId(id: string): AgrupacionInvitada | undefined;
+  obtenerFichas(): readonly FichaConChat[];
+  buscar(termino: string): readonly FichaConChat[];
 }
 
 function normalizar(valor: string): string {
@@ -20,32 +32,38 @@ function normalizar(valor: string): string {
 
 export const personajesRepository: PersonajesRepository = {
   obtenerTodos() {
-    return personajes;
+    return getPersonajesMuseo();
   },
   obtenerPorId(id) {
-    return personajes.find((personaje) => personaje.id === id);
+    return getPersonajeByIdMuseo(id);
   },
   obtenerPorSala(salaId) {
-    return personajes.filter((personaje) =>
-      personaje.salasRelacionadas.includes(salaId),
-    );
+    return getPersonajesPorSalaMuseo(salaId);
+  },
+  obtenerAgrupaciones() {
+    return getAgrupacionesInvitadasMuseo();
+  },
+  obtenerAgrupacionPorId(id) {
+    return getAgrupacionByIdMuseo(id);
+  },
+  obtenerFichas() {
+    return getFichasConChatMuseo();
   },
   buscar(termino) {
     const consulta = normalizar(termino);
+    const fichas = getFichasConChatMuseo();
 
     if (!consulta) {
-      return personajes;
+      return fichas;
     }
 
-    return personajes.filter((personaje) => {
+    return fichas.filter((ficha) => {
       const contenido = [
-        personaje.nombre,
-        personaje.alias ?? "",
-        personaje.epoca,
-        personaje.lugar,
-        personaje.resumen,
-        personaje.descripcion.adolescente,
-        ...personaje.valores.map((valor) => valor.titulo),
+        ficha.nombre,
+        ficha.etiquetaVisible,
+        ficha.descripcion.nino,
+        ficha.descripcion.adolescente,
+        ficha.descripcion.adulto,
       ].join(" ");
 
       return normalizar(contenido).includes(consulta);
@@ -61,10 +79,28 @@ export function getPersonajeById(id: string): Personaje | undefined {
   return personajesRepository.obtenerPorId(id);
 }
 
-export function getPersonajesPorSala(salaId: SalaId): readonly Personaje[] {
+export function getPersonajesPorSala(salaId: string): readonly Personaje[] {
   return personajesRepository.obtenerPorSala(salaId);
 }
 
-export function buscarPersonajes(termino: string): readonly Personaje[] {
+export function getAgrupacionesInvitadas(): readonly AgrupacionInvitada[] {
+  return personajesRepository.obtenerAgrupaciones();
+}
+
+export function getAgrupacionesPorSala(
+  salaId: string,
+): readonly AgrupacionInvitada[] {
+  return getAgrupacionesPorSalaMuseo(salaId);
+}
+
+export function getAgrupacionById(id: string): AgrupacionInvitada | undefined {
+  return personajesRepository.obtenerAgrupacionPorId(id);
+}
+
+export function getFichasConChat(): readonly FichaConChat[] {
+  return personajesRepository.obtenerFichas();
+}
+
+export function buscarPersonajes(termino: string): readonly FichaConChat[] {
   return personajesRepository.buscar(termino);
 }

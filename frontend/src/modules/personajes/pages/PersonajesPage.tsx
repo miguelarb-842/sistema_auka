@@ -1,14 +1,18 @@
 import { UsersRound } from "lucide-react";
 
-import { getPersonajes } from "../services/personajes.service";
+import { getFichasConChat } from "../services/personajes.service";
 import { PersonajesCatalogo } from "../components/PersonajesCatalogo";
 
 import { Breadcrumbs } from "@/components/ui/molecules/Breadcrumbs";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
+import { getMuseo } from "@/modules/museo/services/museo.service";
 
 export function PersonajesPage() {
-  const personajes = getPersonajes();
+  const fichas = getFichasConChat();
+  const museo = getMuseo();
+  const personajes = fichas.filter((ficha) => ficha.tipo === "personaje");
+  const agrupaciones = fichas.filter((ficha) => ficha.tipo === "agrupacion");
 
   return (
     <div className="auka-container pb-16 pt-6 sm:pb-20">
@@ -17,25 +21,25 @@ export function PersonajesPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
         <SectionHeading
           as="h1"
-          description="Fichas para acercarse a figuras históricas, pueblos originarios y personajes culturales. Cada entrada separa el contexto documentado de la interpretación y advierte cuando una imagen es una representación artística."
-          eyebrow="Quiénes hacen la historia"
-          title="Personajes y pueblos de Nicaragua"
+          description={`Las voces de la instalación simulada del Sistema Auka en el ${museo.nombre}. Cada ficha tiene su propio chat y está identificada como representación educativa o agrupación invitada.`}
+          eyebrow="Voces del museo"
+          title="Personajes y agrupación invitada"
         />
 
         <InfoCallout
           className="lg:mb-1"
           icon={<UsersRound aria-hidden="true" className="size-4" />}
-          title="Una ficha, varias capas"
+          title="Representaciones, no citas"
           tono="accent"
         >
-          Vas a encontrar biografía adaptada a tu perfil, acontecimientos
-          marcados, valores para conversar y, en algunos casos, una
-          dramatización educativa claramente identificada.
+          {personajes.length} personajes y {agrupaciones.length} agrupación
+          invitada. La información biográfica, la trayectoria y el repertorio
+          están por verificar. No se presentan como hechos ni como testimonios.
         </InfoCallout>
       </div>
 
       <div className="mt-10">
-        <PersonajesCatalogo personajes={personajes} />
+        <PersonajesCatalogo fichas={fichas} />
       </div>
     </div>
   );

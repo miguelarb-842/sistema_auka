@@ -12,10 +12,26 @@ import { EmptyState } from "@/components/ui/molecules/EmptyState";
 import { SearchInput } from "@/components/ui/molecules/SearchInput";
 
 const filtros = [
-  { id: "todas", etiqueta: "Todas las salas", tono: null },
-  { id: "tradiciones", etiqueta: "Tradiciones", tono: "warning" },
-  { id: "caciques", etiqueta: "Pueblos originarios", tono: "accent" },
-  { id: "resistencia", etiqueta: "Resistencia", tono: "danger" },
+  {
+    id: "todas",
+    etiqueta: "Todas las salas",
+    coincide: () => true,
+  },
+  {
+    id: "con-agente",
+    etiqueta: "Con Agente Xila",
+    coincide: (sala: Sala) => sala.agenteXilaUbicado !== undefined,
+  },
+  {
+    id: "con-personajes",
+    etiqueta: "Con personajes",
+    coincide: (sala: Sala) => sala.personajesRelacionados.length > 0,
+  },
+  {
+    id: "sin-agente",
+    etiqueta: "Sin Agente Xila",
+    coincide: (sala: Sala) => sala.agenteXilaUbicado === undefined,
+  },
 ] as const;
 
 type FiltroId = (typeof filtros)[number]["id"];
@@ -37,10 +53,16 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
     const configuracion = filtros.find((item) => item.id === filtro);
 
     return salas.filter((sala) => {
-      const coincideFiltro =
-        !configuracion?.tono || sala.tono === configuracion.tono;
+      const coincideFiltro = configuracion
+        ? configuracion.coincide(sala)
+        : true;
       const contenido = normalizar(
-        [sala.nombre, sala.tema, sala.resumen, sala.lema].join(" "),
+        [
+          sala.nombre,
+          sala.descripcion.nino,
+          sala.descripcion.adolescente,
+          sala.descripcion.adulto,
+        ].join(" "),
       );
       const coincideBusqueda = !termino || contenido.includes(termino);
 
@@ -52,7 +74,7 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
     <div>
       <div className="flex flex-col gap-4 rounded-3xl border border-border bg-surface/60 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
         <div
-          aria-label="Filtrar salas por tema"
+          aria-label="Filtrar salas"
           className="auka-scroll flex gap-2 overflow-x-auto pb-1"
           role="group"
         >
@@ -76,7 +98,7 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
         <SearchInput
           className="w-full lg:max-w-xs"
           label="Buscar salas"
-          placeholder="Buscar por tema, lema o nombre…"
+          placeholder="Buscar por nombre o descripción…"
           value={consulta}
           onChange={setConsulta}
         />
@@ -109,7 +131,7 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
             </ButtonLink>
           }
           className="mt-6"
-          description="Probá con otra palabra o elegí «Todas las salas». También podés comenzar por la sala de fiestas patronales, la de caciques o la de Diriangén."
+          description="Probá con otra palabra o volvé a «Todas las salas»."
           icon={SearchX}
           title="No encontramos esa sala"
         />
@@ -118,9 +140,9 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
       <div className="mt-10 flex items-start gap-3 rounded-2xl border border-dashed border-border px-4 py-3 text-xs leading-relaxed text-muted">
         <Landmark aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
         <p>
-          Estas tres salas son demostrativas y no representan instalaciones
-          físicas del museo. Cada una indica el carácter de su contenido y evita
-          presentar interpretaciones como hechos documentados.
+          Las {salas.length} salas de esta simulación están marcadas como
+          demostrativas y su contenido está por verificar. La información
+          definitiva será entregada por el equipo del museo.
         </p>
       </div>
     </div>

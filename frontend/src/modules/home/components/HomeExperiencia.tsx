@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Boxes,
+  CircleHelp,
   MessageCircleQuestion,
   ScanSearch,
   Sparkles,
@@ -9,34 +9,43 @@ import {
 
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
-
-const pasos = [
-  {
-    icono: Sparkles,
-    titulo: "Elegí cómo mirar",
-    descripcion:
-      "El perfil de niño, adolescente o adulto cambia el tono de Xila, la profundidad de los textos y los retos.",
-  },
-  {
-    icono: ScanSearch,
-    titulo: "Recorré una sala",
-    descripcion:
-      "Cada sala separa lo documentado, lo interpretativo y lo demostrativo. No hay citas inventadas ni fechas decorativas.",
-  },
-  {
-    icono: MessageCircleQuestion,
-    titulo: "Conversá y preguntá",
-    descripcion:
-      "Xila responde con un motor local de respuestas preparadas. Si no sabe algo, lo dice. La conversación no se envía a ningún servidor.",
-  },
-] as const;
+import {
+  getFichasConChat,
+  getMuseo,
+  getSalas,
+  getSalasConAgente,
+} from "@/modules/museo/services/museo.service";
 
 export function HomeExperiencia() {
+  const museo = getMuseo();
+  const salas = getSalas();
+  const salasConAgente = getSalasConAgente();
+  const fichas = getFichasConChat();
+
+  const pasos = [
+    {
+      icono: Sparkles,
+      titulo: "Elegí cómo mirar",
+      descripcion:
+        "El perfil de niño, adolescente o adulto cambia el tono de la guía, la profundidad de los textos y el tipo de retos.",
+    },
+    {
+      icono: ScanSearch,
+      titulo: "Recorré las salas",
+      descripcion: `Las ${salas.length} salas están marcadas como demostrativas y por verificar. No vas a encontrar biografías, fechas, obras ni repertorios inventados.`,
+    },
+    {
+      icono: MessageCircleQuestion,
+      titulo: "Conversá y preguntá",
+      descripcion: `La guía general, ${salasConAgente.length} agentes Xila y ${fichas.length} voces con chat responden a partir del conocimiento local de cada conversación. Si un dato no está disponible, lo indican en lugar de inventarlo.`,
+    },
+  ] as const;
+
   return (
     <section className="border-y border-separator bg-surface/40">
       <div className="auka-container py-16 sm:py-20">
         <SectionHeading
-          description="Sistema Auka no es un curso ni una enciclopedia. Es una experiencia breve para practicar la curiosidad histórica y aprender a distinguir lo que sabemos de lo que interpretamos."
+          description={`Sistema Auka no es un curso ni una enciclopedia. Es una experiencia breve para practicar la curiosidad y aprender a distinguir lo que sabemos de lo que todavía falta verificar en el ${museo.nombre}.`}
           eyebrow="Cómo funciona"
           title="Una visita guiada por tus propias preguntas"
         />
@@ -69,14 +78,13 @@ export function HomeExperiencia() {
 
         <div className="mt-6 grid items-start gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <InfoCallout
-            icon={<Boxes aria-hidden="true" className="size-4" />}
-            title="Arquitectura de la demostración"
-            tono="accent"
+            icon={<CircleHelp aria-hidden="true" className="size-4" />}
+            title="Una visita sin datos inventados"
+            tono="warning"
           >
-            Next.js con App Router, React, TypeScript, HeroUI y Tailwind CSS 4.
-            No hay backend, base de datos, autenticación ni servicios externos:
-            las preferencias viven en tu navegador y el chat funciona con
-            respuestas predefinidas.
+            Las {salas.length} salas y las {fichas.length} voces con chat de
+            esta instalación están marcadas como demostrativas y por verificar.
+            La información definitiva será entregada por el equipo del museo.
           </InfoCallout>
 
           <Link
@@ -84,9 +92,10 @@ export function HomeExperiencia() {
             href="/acerca"
           >
             <div>
-              <p className="text-sm font-semibold">Conocé el proyecto</p>
+              <p className="text-sm font-semibold">Conocé Sistema Auka</p>
               <p className="mt-1 text-xs leading-relaxed text-muted">
-                Misión, alcance, límites y criterios de contenido.
+                Qué es el producto, qué representa esta instalación y cómo se
+                marca el contenido.
               </p>
             </div>
             <ArrowRight

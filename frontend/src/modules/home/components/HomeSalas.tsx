@@ -2,11 +2,13 @@ import { ArrowRight } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
+import { getMuseo } from "@/modules/museo/services/museo.service";
 import { SalaCard } from "@/modules/salas/components/SalaCard";
 import { getSalasDestacadas } from "@/modules/salas/services/salas.service";
 
 export function HomeSalas() {
   const salas = getSalasDestacadas();
+  const museo = getMuseo();
 
   return (
     <section className="auka-container py-16 sm:py-20">
@@ -17,19 +19,14 @@ export function HomeSalas() {
             <ArrowRight aria-hidden="true" className="size-4" />
           </ButtonLink>
         }
-        description="Cada sala propone un tema, unos personajes y una pregunta para llevarte a casa. Están marcadas como demostrativas: son una invitación a seguir investigando."
-        eyebrow="Salas demostrativas"
-        title="Tres puertas para entrar a la historia"
+        description={`Una selección de ${salas.length} salas de la instalación simulada del Sistema Auka en el ${museo.nombre}. Cada ficha indica qué está por verificar y en cuáles salas encontrás un Agente Xila.`}
+        eyebrow="Salas del museo"
+        title="Un recorrido para empezar"
       />
 
       <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {salas.map((sala, index) => (
-          <SalaCard
-            key={sala.id}
-            className="animate-auka-rise"
-            priority={index === 0}
-            sala={sala}
-          />
+        {salas.map((sala) => (
+          <SalaCard key={sala.id} className="animate-auka-rise" sala={sala} />
         ))}
       </div>
     </section>

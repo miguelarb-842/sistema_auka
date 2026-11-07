@@ -113,12 +113,13 @@ export function ConfiguracionPage() {
         <InfoCallout
           className="lg:mb-1"
           icon={<MonitorSmartphone aria-hidden="true" className="size-4" />}
-          title="Todo queda en tu navegador"
+          title="Tus preferencias, en tu navegador"
           tono="accent"
         >
-          No hay cuentas ni servidores. El perfil, el tamaño de texto y el tema
+          No hay cuentas de visitante. El perfil, el tamaño de texto y el tema
           se guardan con <code>localStorage</code> y podés borrarlos cuando
-          quieras.
+          quieras. El perfil activo se envía con cada mensaje de chat para
+          adaptar la respuesta.
         </InfoCallout>
       </div>
 
@@ -385,16 +386,16 @@ export function ConfiguracionPage() {
           >
             Estas preferencias se guardan solo en este navegador con las claves{" "}
             <code>auka:perfil</code>, <code>auka:tipografia</code> y{" "}
-            <code>auka:tema</code>. No se comparten con terceros ni se envían a
-            un servidor.
+            <code>auka:tema</code>. El perfil activo se envía con cada mensaje
+            de chat para adaptar la respuesta; no se usa para crear una cuenta.
           </InfoCallout>
 
           <div className="rounded-3xl border border-border bg-surface p-5">
             <p className="auka-eyebrow">Restablecer</p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Vuelve al perfil adolescente, al tamaño normal y al tema claro, y
-              borra las preferencias guardadas. No elimina nada de tus
-              conversaciones porque no se guardan.
+              borra las preferencias guardadas. No elimina el historial de la
+              conversación abierta; para eso usá Reiniciar en el chat.
             </p>
             <Button
               fullWidth

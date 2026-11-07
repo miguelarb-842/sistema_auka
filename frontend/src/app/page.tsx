@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 
 import { HomePage } from "@/modules/home/pages/HomePage";
+import {
+  getMuseo,
+  getSalas,
+  getSalasConAgente,
+} from "@/modules/museo/services/museo.service";
+
+const museo = getMuseo();
+const salas = getSalas();
+const salasConAgente = getSalasConAgente();
 
 export const metadata: Metadata = {
-  title: "Museo digital para pensar la historia",
-  description:
-    "Explorá tres salas demostrativas sobre Nicaragua, conocé personajes históricos y conversá con Xila, un robot educativo con respuestas locales.",
+  title: "Inicio",
+  description: `Recorré las ${salas.length} salas de la instalación simulada del Sistema Auka en el ${museo.nombre}, con ${salasConAgente.length} agentes Xila y conversaciones con personajes. Contenido demostrativo y por verificar.`,
 };
 
 export default function Page() {

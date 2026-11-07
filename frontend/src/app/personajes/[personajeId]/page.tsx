@@ -3,15 +3,17 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PersonajeDetalle } from "@/modules/personajes/components/PersonajeDetalle";
-import { getPersonajeById } from "@/modules/personajes/services/personajes.service";
-import { PERSONAJE_IDS } from "@/types/ids.types";
+import {
+  getPersonajeById,
+  getPersonajes,
+} from "@/modules/personajes/services/personajes.service";
 
 interface PersonajePageProps {
   params: Promise<{ personajeId: string }>;
 }
 
 export function generateStaticParams() {
-  return PERSONAJE_IDS.map((personajeId) => ({ personajeId }));
+  return getPersonajes().map((personaje) => ({ personajeId: personaje.id }));
 }
 
 export async function generateMetadata({
@@ -26,11 +28,10 @@ export async function generateMetadata({
 
   return {
     title: personaje.nombre,
-    description: personaje.resumen,
+    description: personaje.descripcion.adolescente,
     openGraph: {
       title: `${personaje.nombre} · Sistema Auka`,
-      description: personaje.resumen,
-      images: [{ url: personaje.ilustracion, alt: personaje.ilustracionAlt }],
+      description: personaje.descripcion.adolescente,
     },
   };
 }

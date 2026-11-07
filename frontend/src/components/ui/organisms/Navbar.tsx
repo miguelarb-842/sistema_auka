@@ -11,7 +11,8 @@ import { Logo } from "../atoms/Logo";
 import { ThemeToggle } from "../molecules/ThemeToggle";
 
 import { cn } from "@/lib/utils";
-import { mainNavigation, secondaryNavigation } from "@/config/navigation";
+import { mainNavigation } from "@/config/navigation";
+import { siteConfig } from "@/config/site";
 
 function esRutaActiva(pathname: string, href: string): boolean {
   if (href === "/") {
@@ -21,11 +22,18 @@ function esRutaActiva(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function Navbar() {
+export function Navbar({
+  etiquetaInstalacion,
+}: {
+  etiquetaInstalacion: string;
+}) {
   const pathname = usePathname();
   const drawer = useOverlayState();
-  const { close: cerrarDrawer, open: abrirDrawer, isOpen: menuAbierto } =
-    drawer;
+  const {
+    close: cerrarDrawer,
+    open: abrirDrawer,
+    isOpen: menuAbierto,
+  } = drawer;
 
   useEffect(() => {
     cerrarDrawer();
@@ -34,7 +42,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-separator/70 bg-background/80 backdrop-blur-xl">
       <div className="auka-container flex h-[var(--auka-header-height)] items-center justify-between gap-4">
-        <Logo />
+        <Logo etiquetaInstalacion={etiquetaInstalacion} />
 
         <nav aria-label="Navegación principal" className="hidden lg:block">
           <ul className="flex items-center gap-1">
@@ -78,7 +86,7 @@ export function Navbar() {
             href="/chat"
           >
             <MessageCircleQuestion aria-hidden="true" className="size-4" />
-            Hablar con Xila
+            Conversar
           </Link>
           <Button
             isIconOnly
@@ -158,16 +166,13 @@ export function Navbar() {
                     aria-hidden="true"
                     className="size-4"
                   />
-                  Hablar con Xila
+                  Conversar
                 </Link>
               </Drawer.Body>
               <Drawer.Footer className="border-t border-separator pt-4">
                 <p className="text-xs leading-relaxed text-muted">
-                  La historia se piensa, no se copia.
+                  {siteConfig.slogan}
                 </p>
-                <span className="sr-only">
-                  {secondaryNavigation.map((item) => item.label).join(", ")}
-                </span>
               </Drawer.Footer>
             </Drawer.Dialog>
           </Drawer.Content>

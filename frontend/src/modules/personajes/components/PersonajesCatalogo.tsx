@@ -1,10 +1,11 @@
 "use client";
 
-import type { Personaje } from "../types/personaje.types";
+import type { FichaConChat } from "../types/personaje.types";
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { SearchX } from "lucide-react";
 
+import { AgrupacionCard } from "./AgrupacionCard";
 import { PersonajeCard } from "./PersonajeCard";
 
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
@@ -12,10 +13,9 @@ import { EmptyState } from "@/components/ui/molecules/EmptyState";
 import { SearchInput } from "@/components/ui/molecules/SearchInput";
 
 const filtros = [
-  { id: "todos", etiqueta: "Todos", tipo: null },
-  { id: "historico", etiqueta: "Figuras históricas", tipo: "historico" },
-  { id: "colectivo", etiqueta: "Pueblos originarios", tipo: "colectivo" },
-  { id: "cultural", etiqueta: "Figuras culturales", tipo: "cultural" },
+  { id: "todos", etiqueta: "Todas las voces", tipo: null },
+  { id: "personaje", etiqueta: "Personajes", tipo: "personaje" },
+  { id: "agrupacion", etiqueta: "Agrupaciones invitadas", tipo: "agrupacion" },
 ] as const;
 
 type FiltroId = (typeof filtros)[number]["id"];
@@ -28,41 +28,41 @@ function normalizar(valor: string): string {
 }
 
 export function PersonajesCatalogo({
-  personajes,
+  fichas,
 }: {
-  personajes: readonly Personaje[];
+  fichas: readonly FichaConChat[];
 }) {
   const [consulta, setConsulta] = useState("");
   const [filtro, setFiltro] = useState<FiltroId>("todos");
   const consultaDiferida = useDeferredValue(consulta);
 
-  const filtrados = useMemo(() => {
+  const filtradas = useMemo(() => {
     const termino = normalizar(consultaDiferida.trim());
     const configuracion = filtros.find((item) => item.id === filtro);
 
-    return personajes.filter((personaje) => {
+    return fichas.filter((ficha) => {
       const coincideFiltro =
-        !configuracion?.tipo || personaje.tipo === configuracion.tipo;
+        !configuracion?.tipo || ficha.tipo === configuracion.tipo;
       const contenido = normalizar(
         [
-          personaje.nombre,
-          personaje.alias ?? "",
-          personaje.epoca,
-          personaje.lugar,
-          personaje.resumen,
+          ficha.nombre,
+          ficha.etiquetaVisible,
+          ficha.descripcion.nino,
+          ficha.descripcion.adolescente,
+          ficha.descripcion.adulto,
         ].join(" "),
       );
       const coincideBusqueda = !termino || contenido.includes(termino);
 
       return coincideFiltro && coincideBusqueda;
     });
-  }, [consultaDiferida, filtro, personajes]);
+  }, [consultaDiferida, fichas, filtro]);
 
   return (
     <div>
       <div className="flex flex-col gap-4 rounded-3xl border border-border bg-surface/60 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
         <div
-          aria-label="Filtrar personajes por tipo"
+          aria-label="Filtrar voces del museo"
           className="auka-scroll flex gap-2 overflow-x-auto pb-1"
           role="group"
         >
@@ -85,24 +85,28 @@ export function PersonajesCatalogo({
 
         <SearchInput
           className="w-full lg:max-w-xs"
-          label="Buscar personajes"
-          placeholder="Buscar por nombre, época o lugar…"
+          label="Buscar personajes y agrupaciones"
+          placeholder="Buscar por nombre o descripción…"
           value={consulta}
           onChange={setConsulta}
         />
       </div>
 
       <p className="mt-4 text-xs font-medium text-muted" role="status">
-        {filtrados.length}{" "}
-        {filtrados.length === 1 ? "ficha encontrada" : "fichas encontradas"}
+        {filtradas.length}{" "}
+        {filtradas.length === 1 ? "ficha encontrada" : "fichas encontradas"}
         {consulta.trim() ? ` para «${consulta.trim()}»` : ""}
       </p>
 
-      {filtrados.length > 0 ? (
-        <div className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {filtrados.map((personaje) => (
-            <PersonajeCard key={personaje.id} personaje={personaje} />
-          ))}
+      {filtradas.length > 0 ? (
+        <div className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {filtradas.map((ficha) =>
+            ficha.tipo === "agrupacion" ? (
+              <AgrupacionCard key={ficha.id} agrupacion={ficha} />
+            ) : (
+              <PersonajeCard key={ficha.id} personaje={ficha} />
+            ),
+          )}
         </div>
       ) : (
         <EmptyState
@@ -119,9 +123,9 @@ export function PersonajesCatalogo({
             </ButtonLink>
           }
           className="mt-6"
-          description="Probá con otra palabra o volvé a «Todos». Las fichas incluyen figuras históricas, pueblos originarios y una figura cultural vinculada a las fiestas patronales."
+          description="Probá con otra palabra o volvé a «Todas las voces»."
           icon={SearchX}
-          title="No encontramos ese personaje"
+          title="No encontramos esa ficha"
         />
       )}
     </div>

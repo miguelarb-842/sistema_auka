@@ -19,7 +19,7 @@ export function HomePerfiles() {
         }
         description="El mismo contenido puede contarse de muchas maneras. Elegí un perfil para ajustar el tono, la extensión de los textos y el tipo de retos. Podés cambiarlo en cualquier momento."
         eyebrow="Un museo para distintas edades"
-        title="Tres formas de habitar la experiencia"
+        title="Tres formas de recorrer el museo"
       />
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">

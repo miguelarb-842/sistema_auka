@@ -3,15 +3,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SalaDetalle } from "@/modules/salas/components/SalaDetalle";
-import { getSalaById } from "@/modules/salas/services/salas.service";
-import { SALA_IDS } from "@/types/ids.types";
+import { getSalaById, getSalas } from "@/modules/salas/services/salas.service";
 
 interface SalaPageProps {
   params: Promise<{ salaId: string }>;
 }
 
 export function generateStaticParams() {
-  return SALA_IDS.map((salaId) => ({ salaId }));
+  return getSalas().map((sala) => ({ salaId: sala.id }));
 }
 
 export async function generateMetadata({
@@ -26,11 +25,10 @@ export async function generateMetadata({
 
   return {
     title: sala.nombre,
-    description: sala.resumen,
+    description: sala.descripcion.adolescente,
     openGraph: {
       title: `${sala.nombre} · Sistema Auka`,
-      description: sala.resumen,
-      images: [{ url: sala.portada, alt: sala.portadaAlt }],
+      description: sala.descripcion.adolescente,
     },
   };
 }

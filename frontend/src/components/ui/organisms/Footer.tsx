@@ -1,20 +1,24 @@
 import Link from "next/link";
-import { Heart, ShieldCheck } from "lucide-react";
+import { CircleHelp, Heart } from "lucide-react";
 
 import { Logo } from "../atoms/Logo";
 
 import { siteConfig } from "@/config/site";
 import { mainNavigation } from "@/config/navigation";
 
-export function Footer() {
+export function Footer({
+  etiquetaInstalacion,
+}: {
+  etiquetaInstalacion: string;
+}) {
   return (
     <footer className="mt-20 border-t border-separator bg-surface/40">
       <div className="auka-container py-12">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div className="max-w-sm">
-            <Logo />
+            <Logo etiquetaInstalacion={etiquetaInstalacion} />
             <p className="mt-5 text-sm leading-relaxed text-muted">
-              {siteConfig.description}
+              {siteConfig.productDescription}
             </p>
             <p className="mt-4 text-sm font-medium text-foreground">
               «{siteConfig.slogan}»
@@ -61,9 +65,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-muted">
-                  Sistema Auka · Robot Xila
-                </span>
+                <span className="text-sm text-muted">{siteConfig.name}</span>
               </li>
             </ul>
           </div>
@@ -71,19 +73,15 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-4 border-t border-separator pt-6 text-xs leading-relaxed text-muted md:flex-row md:items-center md:justify-between">
           <p className="flex items-start gap-2">
-            <ShieldCheck
-              aria-hidden="true"
-              className="mt-0.5 size-4 shrink-0"
-            />
+            <CircleHelp aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
             <span>
-              Prototipo frontend educativo. Las salas son demostrativas y no
-              representan instalaciones reales. El chat funciona con respuestas
-              simuladas y no se conecta a una IA real.
+              Contenido demostrativo y por verificar. La información definitiva
+              será entregada por el equipo del museo.
             </span>
           </p>
           <p className="flex shrink-0 items-center gap-1.5">
             Hecho con <Heart aria-hidden="true" className="size-3.5" /> para
-            pensar la historia · {siteConfig.year}
+            pensar lo que vemos · {siteConfig.year}
           </p>
         </div>
       </div>

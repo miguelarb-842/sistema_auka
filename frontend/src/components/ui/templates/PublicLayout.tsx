@@ -3,7 +3,15 @@ import type { ReactNode } from "react";
 import { Footer } from "../organisms/Footer";
 import { Navbar } from "../organisms/Navbar";
 
-export function PublicLayout({ children }: { children: ReactNode }) {
+interface PublicLayoutProps {
+  children: ReactNode;
+  etiquetaInstalacion: string;
+}
+
+export function PublicLayout({
+  children,
+  etiquetaInstalacion,
+}: PublicLayoutProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       <a
@@ -12,11 +20,11 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       >
         Saltar al contenido
       </a>
-      <Navbar />
+      <Navbar etiquetaInstalacion={etiquetaInstalacion} />
       <main className="flex-1" id="contenido">
         {children}
       </main>
-      <Footer />
+      <Footer etiquetaInstalacion={etiquetaInstalacion} />
     </div>
   );
 }

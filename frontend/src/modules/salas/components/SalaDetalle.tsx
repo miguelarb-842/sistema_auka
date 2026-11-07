@@ -1,19 +1,12 @@
 import type { Sala } from "../types/sala.types";
 
-import Image from "next/image";
 import {
   ArrowRight,
-  BookOpen,
-  CalendarClock,
-  CircleHelp,
+  Landmark,
   MessageCircleQuestion,
-  Sparkles,
+  UsersRound,
 } from "lucide-react";
 import { Chip } from "@heroui/react";
-
-import { iconosElementos } from "../utils/iconos";
-
-import { RetoCard } from "./RetoCard";
 
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
 import { Breadcrumbs } from "@/components/ui/molecules/Breadcrumbs";
@@ -21,21 +14,21 @@ import { ContentBadge } from "@/components/ui/molecules/ContentBadge";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 import { TextoAdaptado } from "@/components/ui/molecules/TextoAdaptado";
+import { VerificacionBadge } from "@/components/ui/molecules/VerificacionBadge";
+import { getMuseo } from "@/modules/museo/services/museo.service";
+import { AgrupacionCard } from "@/modules/personajes/components/AgrupacionCard";
 import { PersonajeCard } from "@/modules/personajes/components/PersonajeCard";
-import { getPersonajesPorSala } from "@/modules/personajes/services/personajes.service";
-import { getAsistentePorSala } from "@/modules/chat-xila/services/asistentes.service";
-
-const tonos = {
-  accent: "accent" as const,
-  warning: "warning" as const,
-  success: "success" as const,
-  danger: "danger" as const,
-};
+import {
+  getAgrupacionesPorSala,
+  getPersonajesPorSala,
+} from "@/modules/personajes/services/personajes.service";
 
 export function SalaDetalle({ sala }: { sala: Sala }) {
+  const museo = getMuseo();
   const personajes = getPersonajesPorSala(sala.id);
-  const asistente = getAsistentePorSala(sala.id);
-  const color = tonos[sala.tono];
+  const agrupaciones = getAgrupacionesPorSala(sala.id);
+  const agente = sala.agenteXilaUbicado;
+  const totalVinculos = personajes.length + agrupaciones.length;
 
   return (
     <article>
@@ -46,50 +39,49 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
       </div>
 
       <header className="auka-container py-8 sm:py-10">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <Chip color={color} size="sm" variant="soft">
-                {sala.tema}
-              </Chip>
-              <Chip size="sm" variant="soft">
-                Sala demostrativa
-              </Chip>
+              <VerificacionBadge />
+              <ContentBadge estado={sala.estado} />
+              {agente ? (
+                <Chip color="accent" size="sm" variant="soft">
+                  Agente Xila · {sala.nombre}
+                </Chip>
+              ) : null}
             </div>
+
             <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.03] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
               {sala.nombre}
             </h1>
-            <p className="mt-3 text-lg font-medium italic text-muted">
-              «{sala.lema}»
-            </p>
+
             <TextoAdaptado
               className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg"
               contenido={sala.descripcion}
             />
 
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted">
-              <span className="inline-flex items-center gap-1.5">
-                <CalendarClock aria-hidden="true" className="size-4" />
-                {sala.duracion}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <BookOpen aria-hidden="true" className="size-4" />
-                {sala.bloques.length} bloques de contenido
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Sparkles aria-hidden="true" className="size-4" />
-                {sala.retos.length} retos
-              </span>
-            </div>
+            <p className="mt-4 text-sm font-medium text-muted">
+              {museo.nombre} · Instalación del Sistema Auka representada en esta
+              simulación
+            </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={`/chat/${sala.id}`} size="lg">
+              {agente ? (
+                <ButtonLink href={`/chat/sala/${sala.id}`} size="lg">
+                  <MessageCircleQuestion
+                    aria-hidden="true"
+                    className="size-4"
+                  />
+                  Conversar con el Agente Xila
+                </ButtonLink>
+              ) : null}
+              <ButtonLink
+                href="/chat/guia-general"
+                size="lg"
+                variant={agente ? "outline" : "primary"}
+              >
                 <MessageCircleQuestion aria-hidden="true" className="size-4" />
-                Conversar con {asistente?.nombre ?? "Xila"}
-              </ButtonLink>
-              <ButtonLink href="/personajes" size="lg" variant="outline">
-                Ver personajes
-                <ArrowRight aria-hidden="true" className="size-4" />
+                Hablar con la guía general
               </ButtonLink>
             </div>
           </div>
@@ -99,21 +91,21 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
               aria-hidden="true"
               className="absolute -inset-3 rounded-[2.5rem] border border-border/70 bg-surface/30"
             />
-            <div className="auka-image-frame relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-border shadow-xl shadow-black/5">
-              <Image
-                fill
-                priority
-                alt={sala.portadaAlt}
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 560px"
-                src={sala.portada}
-              />
-              <span
-                aria-hidden="true"
-                className="auka-gradient-overlay absolute inset-0 opacity-50"
-              />
-              <span className="absolute bottom-4 left-4 rounded-full border border-white/25 bg-black/30 px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-white/85 backdrop-blur">
-                Ilustración conceptual
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-border bg-foreground/[0.03] shadow-xl shadow-black/5">
+              <span className="auka-pattern absolute inset-0 opacity-40" />
+              <span className="absolute inset-0 bg-gradient-to-br from-accent/15 via-transparent to-warning/10" />
+              <span className="absolute inset-0 grid place-items-center">
+                <span className="grid size-24 place-items-center rounded-3xl border border-border bg-surface/80 text-foreground shadow-sm backdrop-blur">
+                  <Landmark className="size-10" />
+                </span>
+              </span>
+              <span className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
+                <span className="rounded-full border border-border bg-background/80 px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted backdrop-blur">
+                  Sala de la instalación
+                </span>
+                <span className="rounded-full border border-border bg-background/80 px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted backdrop-blur">
+                  Sin imagen verificada
+                </span>
               </span>
             </div>
           </div>
@@ -123,126 +115,101 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
       <section className="border-y border-separator bg-surface/40">
         <div className="auka-container grid gap-8 py-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <div>
-            <p className="auka-eyebrow">La sala en pocas palabras</p>
-            <TextoAdaptado
-              as="p"
-              className="mt-4 text-pretty text-xl leading-relaxed tracking-[-0.01em] sm:text-2xl"
-              contenido={sala.introduccion}
-            />
+            <p className="auka-eyebrow">Estado de la información</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+              Qué se puede afirmar sobre esta sala
+            </h2>
+            <p className="mt-4 text-pretty text-base leading-relaxed text-muted">
+              Esta simulación solo presenta el nombre y la existencia de la sala
+              dentro de la instalación. La descripción de su exhibición, sus
+              objetos, sus obras, sus fechas y sus actividades está por
+              verificar y será entregada por el equipo del museo.
+            </p>
+            <p className="mt-4 text-pretty text-base leading-relaxed text-muted">
+              Las relaciones con personajes y agrupaciones son provisionales.
+              Cuando no hay vínculos asignados, la ficha lo indica en lugar de
+              inventarlos.
+            </p>
 
-            <div className="mt-7">
-              <p className="flex items-center gap-2 text-sm font-semibold">
-                <CircleHelp aria-hidden="true" className="size-4 text-accent" />
-                Preguntas que abre esta sala
-              </p>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                {sala.preguntasClave.map((pregunta) => (
-                  <li
-                    key={pregunta}
-                    className="rounded-xl border border-border bg-background px-3 py-2.5 text-sm leading-snug text-muted"
-                  >
-                    {pregunta}
-                  </li>
-                ))}
-              </ul>
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium text-muted">
+              <span className="inline-flex items-center gap-1.5">
+                <UsersRound aria-hidden="true" className="size-4" />
+                {totalVinculos === 0
+                  ? "Sin vínculos asignados"
+                  : `${totalVinculos} ${totalVinculos === 1 ? "vínculo provisional" : "vínculos provisionales"}`}
+              </span>
+              {agente ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <MessageCircleQuestion
+                    aria-hidden="true"
+                    className="size-4"
+                  />
+                  Chat de sala disponible
+                </span>
+              ) : null}
             </div>
           </div>
 
           <InfoCallout
             className="self-start"
-            icon={<BookOpen aria-hidden="true" className="size-4" />}
-            title="Aviso de contenido"
+            icon={<Landmark aria-hidden="true" className="size-4" />}
+            title="Contenido por verificar"
             tono="warning"
           >
-            {sala.avisoContenido}
+            No se presentan biografías, fechas, obras, repertorios, integrantes,
+            horarios ni precios. Toda la información de esta sala está marcada
+            como demostrativa y pendiente de verificación.
           </InfoCallout>
         </div>
       </section>
 
-      <section className="auka-container py-14 sm:py-16">
-        <SectionHeading
-          description="Cada bloque indica si su contenido está documentado, si es una interpretación o si forma parte de la demostración. Las fuentes específicas deberán completarse en la versión final."
-          eyebrow="Recorrido"
-          title="Tres paradas dentro de la sala"
-        />
-
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {sala.bloques.map((bloque, index) => (
-            <article
-              key={bloque.id}
-              className="flex h-full flex-col rounded-3xl border border-border bg-surface p-6"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-mono text-xs font-semibold text-muted">
-                  0{index + 1}
-                </span>
-                <ContentBadge estado={bloque.estado} />
-              </div>
-              <h3 className="mt-5 text-balance text-xl font-semibold tracking-tight">
-                {bloque.titulo}
-              </h3>
-              <TextoAdaptado
-                className="mt-3 flex-1 text-sm leading-relaxed text-muted"
-                contenido={bloque.contenido}
-              />
-              {bloque.fuente ? (
-                <p className="mt-4 border-t border-separator pt-4 text-xs leading-relaxed text-muted">
-                  {bloque.fuente}
-                </p>
-              ) : null}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-separator bg-surface/40">
-        <div className="auka-container py-14 sm:py-16">
-          <SectionHeading
-            description="Objetos, lugares y prácticas que ayudan a entrar en el tema. Son puntos de partida para conversar, no piezas de una colección real."
-            eyebrow="Detalles para mirar"
-            title="Lo que compone esta sala"
-          />
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {sala.elementos.map((elemento) => {
-              const Icono = iconosElementos[elemento.icono];
-
-              return (
-                <div
-                  key={elemento.id}
-                  className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5"
-                >
-                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-surface-secondary text-foreground">
-                    <Icono aria-hidden="true" className="size-5" />
-                  </span>
-                  <div>
-                    <h3 className="text-base font-semibold">
-                      {elemento.titulo}
-                    </h3>
-                    <TextoAdaptado
-                      className="mt-1 text-sm leading-relaxed text-muted"
-                      contenido={elemento.descripcion}
-                    />
-                  </div>
+      {agente ? (
+        <section className="auka-container py-14 sm:py-16">
+          <div className="relative overflow-hidden rounded-[2rem] border border-border bg-surface p-6 sm:p-10">
+            <div
+              aria-hidden="true"
+              className="absolute inset-y-0 right-0 w-1/2 auka-glow opacity-70"
+            />
+            <div className="relative grid items-center gap-8 md:grid-cols-[1fr_auto]">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Chip color="accent" size="sm" variant="soft">
+                    Agente Xila
+                  </Chip>
+                  <VerificacionBadge />
                 </div>
-              );
-            })}
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+                  {agente.nombreVisible}
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+                  {agente.etiquetaVisible}
+                </p>
+                <TextoAdaptado
+                  className="mt-4 max-w-2xl text-sm leading-relaxed text-muted"
+                  contenido={agente.bienvenida}
+                />
+              </div>
+              <ButtonLink href={`/chat/sala/${sala.id}`} size="lg">
+                <MessageCircleQuestion aria-hidden="true" className="size-4" />
+                Iniciar chat
+              </ButtonLink>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      {personajes.length > 0 ? (
+      {totalVinculos > 0 ? (
         <section className="auka-container py-14 sm:py-16">
           <SectionHeading
             action={
               <ButtonLink href="/personajes" variant="outline">
-                Ver todos los personajes
+                Ver todas las voces
                 <ArrowRight aria-hidden="true" className="size-4" />
               </ButtonLink>
             }
-            description="Las fichas distinguen entre figura histórica, pueblo originario y figura cultural. Las ilustraciones son representaciones artísticas, no retratos verificados."
-            eyebrow="Quiénes aparecen"
-            title="Personajes y pueblos de esta sala"
+            description="Las relaciones son provisionales y están marcadas como por verificar. Cada voz tiene su propio chat."
+            eyebrow="Voces relacionadas"
+            title="Personajes y agrupaciones de esta sala"
           />
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {personajes.map((personaje) => (
@@ -252,62 +219,46 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
                 personaje={personaje}
               />
             ))}
+            {agrupaciones.map((agrupacion) => (
+              <AgrupacionCard
+                key={agrupacion.id}
+                compacta
+                agrupacion={agrupacion}
+              />
+            ))}
           </div>
         </section>
-      ) : null}
-
-      <section className="border-y border-separator bg-surface/40">
-        <div className="auka-container py-14 sm:py-16">
+      ) : (
+        <section className="auka-container py-14 sm:py-16">
           <SectionHeading
-            description="Los retos cambian según el perfil elegido. Podés ver una pista o el cierre, pero la idea es intentarlo primero."
-            eyebrow="Para pensar"
-            title="Retos de la sala"
+            description="La relación provisional de esta simulación no asigna personajes ni agrupaciones a esta sala. Esa vinculación está por verificar."
+            eyebrow="Voces relacionadas"
+            title="Sin voces asignadas por ahora"
           />
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {sala.retos.map((reto, index) => (
-              <RetoCard key={reto.id} indice={index} reto={reto} />
-            ))}
+        </section>
+      )}
+
+      <section className="border-t border-separator bg-surface/40">
+        <div className="auka-container py-14 sm:py-16">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div>
+              <p className="auka-eyebrow">Guía general</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                ¿Querés orientarte por todo el museo?
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+                La guía general puede contarte qué salas existen, dónde está el
+                Agente Xila y con qué personajes o agrupaciones podés conversar.
+                No inventa información sobre esta sala.
+              </p>
+            </div>
+            <ButtonLink href="/chat/guia-general" size="lg" variant="outline">
+              <MessageCircleQuestion aria-hidden="true" className="size-4" />
+              Abrir la guía general
+            </ButtonLink>
           </div>
         </div>
       </section>
-
-      {asistente ? (
-        <section className="auka-container py-14 sm:py-16">
-          <div className="relative overflow-hidden rounded-[2rem] border border-border bg-surface p-6 sm:p-10">
-            <div
-              aria-hidden="true"
-              className="absolute inset-y-0 right-0 w-1/2 auka-glow opacity-70"
-            />
-            <div className="relative grid items-center gap-8 md:grid-cols-[auto_1fr_auto]">
-              <div className="relative size-24 overflow-hidden rounded-3xl border border-border bg-background">
-                <Image
-                  fill
-                  alt={asistente.avatarAlt}
-                  className="object-cover"
-                  sizes="96px"
-                  src={asistente.avatar}
-                />
-              </div>
-              <div>
-                <p className="auka-eyebrow">Asistente de la sala</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                  {asistente.nombre}
-                </h2>
-                <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-                  {asistente.biografia}
-                </p>
-                <p className="mt-3 text-xs font-medium text-muted">
-                  Simulación local con respuestas preparadas. No es una IA real.
-                </p>
-              </div>
-              <ButtonLink href={`/chat/${sala.id}`} size="lg">
-                <MessageCircleQuestion aria-hidden="true" className="size-4" />
-                Iniciar chat
-              </ButtonLink>
-            </div>
-          </div>
-        </section>
-      ) : null}
     </article>
   );
 }
