@@ -7,8 +7,8 @@ import { Landmark, SearchX } from "lucide-react";
 
 import { SalaCard } from "./SalaCard";
 
-import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
 import { EmptyState } from "@/components/ui/molecules/EmptyState";
+import { MotionReveal } from "@/components/ui/motion/MotionReveal";
 import { SearchInput } from "@/components/ui/molecules/SearchInput";
 
 const filtros = [
@@ -81,11 +81,12 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
           {filtros.map((item) => (
             <button
               key={item.id}
+              aria-controls="resultados-salas"
               aria-pressed={filtro === item.id}
               className={
                 filtro === item.id
-                  ? "shrink-0 rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background transition-colors"
-                  : "shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground"
+                  ? "shrink-0 rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  : "shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               }
               type="button"
               onClick={() => setFiltro(item.id)}
@@ -97,6 +98,7 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
 
         <SearchInput
           className="w-full lg:max-w-xs"
+          controls="resultados-salas"
           label="Buscar salas"
           placeholder="Buscar por nombre o descripción…"
           value={consulta}
@@ -104,38 +106,51 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
         />
       </div>
 
-      <p className="mt-4 text-xs font-medium text-muted" role="status">
-        {filtradas.length}{" "}
-        {filtradas.length === 1 ? "sala encontrada" : "salas encontradas"}
-        {consulta.trim() ? ` para «${consulta.trim()}»` : ""}
-      </p>
+      <div id="resultados-salas">
+        <p className="mt-4 text-xs font-medium text-muted" role="status">
+          {filtradas.length}{" "}
+          {filtradas.length === 1 ? "sala encontrada" : "salas encontradas"}
+          {consulta.trim() ? ` para «${consulta.trim()}»` : ""}
+        </p>
 
-      {filtradas.length > 0 ? (
-        <div className="mt-5 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filtradas.map((sala) => (
-            <SalaCard key={sala.id} sala={sala} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState
-          action={
-            <ButtonLink
-              href="/salas"
-              variant="outline"
-              onClick={() => {
-                setConsulta("");
-                setFiltro("todas");
-              }}
-            >
-              Limpiar filtros
-            </ButtonLink>
-          }
-          className="mt-6"
-          description="Probá con otra palabra o volvé a «Todas las salas»."
-          icon={SearchX}
-          title="No encontramos esa sala"
-        />
-      )}
+        {filtradas.length > 0 ? (
+          <div className="mt-5 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filtradas.map((sala, index) => (
+              <MotionReveal
+                key={sala.id}
+                interactive
+                className="h-full"
+                index={index}
+              >
+                <SalaCard sala={sala} />
+              </MotionReveal>
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            action={
+              <button
+                className="inline-flex items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                type="button"
+                onClick={() => {
+                  setConsulta("");
+                  setFiltro("todas");
+                }}
+              >
+                Limpiar filtros
+              </button>
+            }
+            className="mt-6"
+            description={
+              consulta.trim()
+                ? `No encontramos coincidencias para «${consulta.trim()}». Probá con otra palabra o volvé a «Todas las salas».`
+                : "Probá con otro filtro o volvé a «Todas las salas»."
+            }
+            icon={SearchX}
+            title="No encontramos esa sala"
+          />
+        )}
+      </div>
 
       <div className="mt-10 flex items-start gap-3 rounded-2xl border border-dashed border-border px-4 py-3 text-xs leading-relaxed text-muted">
         <Landmark aria-hidden="true" className="mt-0.5 size-4 shrink-0" />

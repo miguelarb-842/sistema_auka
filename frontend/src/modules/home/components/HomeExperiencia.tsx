@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
+import { MotionReveal } from "@/components/ui/motion/MotionReveal";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 import {
   getFichasConChat,
@@ -55,9 +56,10 @@ export function HomeExperiencia() {
             const Icono = paso.icono;
 
             return (
-              <div
+              <MotionReveal
                 key={paso.titulo}
                 className="relative rounded-3xl border border-border bg-background p-6"
+                index={index}
               >
                 <span className="absolute right-5 top-5 font-mono text-xs font-semibold text-muted">
                   0{index + 1}
@@ -71,7 +73,7 @@ export function HomeExperiencia() {
                 <p className="mt-2 text-sm leading-relaxed text-muted">
                   {paso.descripcion}
                 </p>
-              </div>
+              </MotionReveal>
             );
           })}
         </div>

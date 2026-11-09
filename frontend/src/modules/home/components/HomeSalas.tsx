@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
+import { MotionReveal } from "@/components/ui/motion/MotionReveal";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 import { getMuseo } from "@/modules/museo/services/museo.service";
 import { SalaCard } from "@/modules/salas/components/SalaCard";
@@ -25,8 +26,15 @@ export function HomeSalas() {
       />
 
       <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {salas.map((sala) => (
-          <SalaCard key={sala.id} className="animate-auka-rise" sala={sala} />
+        {salas.map((sala, index) => (
+          <MotionReveal
+            key={sala.id}
+            interactive
+            className="h-full"
+            index={index}
+          >
+            <SalaCard sala={sala} />
+          </MotionReveal>
         ))}
       </div>
     </section>

@@ -1,5 +1,21 @@
 @import "tailwindcss";
-@import "@heroui/styles";
+
+/*
+ * Importación selectiva de HeroUI.
+ *
+ * `@heroui/styles` incluye las 516 KB de todos los componentes. La app solo
+ * usa Button, Chip, Skeleton y Modal; importar únicamente esos estilos reduce
+ * el CSS render-blocking sin cambiar la apariencia.
+ */
+@layer theme, base, components, utilities;
+@import "@heroui/styles/base" layer(base);
+@import "@heroui/styles/themes/default" layer(theme);
+@import "@heroui/styles/utilities";
+@import "@heroui/styles/variants";
+@import "@heroui/styles/components/button.css" layer(components);
+@import "@heroui/styles/components/chip.css" layer(components);
+@import "@heroui/styles/components/skeleton.css" layer(components);
+@import "@heroui/styles/components/modal.css" layer(components);
 
 @custom-variant dark (&:is(.dark *));
 
@@ -23,12 +39,23 @@
   --radius: 0.5rem;
   --field-radius: 0.75rem;
   --auka-header-height: 4.5rem;
+  --auka-mobile-nav-height: 4.25rem;
+  --auka-mobile-nav-space: calc(
+    var(--auka-mobile-nav-height) + env(safe-area-inset-bottom, 0px)
+  );
 }
 
 html {
   scroll-behavior: smooth;
   font-size: 100%;
   scroll-padding-top: calc(var(--auka-header-height) + 1.5rem);
+  scroll-padding-bottom: calc(var(--auka-mobile-nav-space) + 1rem);
+}
+
+@media (min-width: 1024px) {
+  html {
+    scroll-padding-bottom: 1rem;
+  }
 }
 
 html[data-font-size="sm"] {
@@ -263,7 +290,56 @@ body {
 }
 
 /*
- * Holo Card local: inclinación 3D, textura y brillo que sigue al puntero.
+ * Anime.js · revelado progresivo.
+ *
+ * El estado oculto solo se aplica cuando hay JS y el visitante no pidió
+ * movimiento reducido. Así el contenido SSR sigue siendo visible si la
+ * hidratación falla. Las animaciones se aplican bajo el pliegue, nunca al
+ * titular LCP.
+ */
+.anime-reveal {
+  will-change: opacity, transform;
+}
+
+html[data-motion="full"][data-js="true"]
+  .anime-reveal[data-reveal="pending"] {
+  opacity: 0;
+  transform: translate3d(0, 1.1rem, 0);
+}
+
+html[data-motion="reduced"] .anime-reveal,
+html[data-motion="reduced"] .anime-reveal[data-reveal="pending"] {
+  opacity: 1 !important;
+  transform: none !important;
+  will-change: auto;
+}
+
+.anime-card {
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Entrada de la barra inferior móvil. */
+@keyframes auka-nav-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-auka-nav-in {
+  animation: auka-nav-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.auka-mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Holo Card local: inclinación 3D, textura y brillo que sigue al puntero.
  * La API imita las capas de HeroUI Pro sin requerir su licencia.
  */
 .holo-card {
@@ -409,9 +485,37 @@ body {
   border-radius: calc(var(--holo-card-radius) - 0.35rem);
 }
 
+html[data-motion="reduced"] {
+  scroll-behavior: auto;
+}
+
+html[data-motion="reduced"] .holo-card__rotator {
+  transform: none !important;
+  transition: none !important;
+}
+
+html[data-motion="reduced"] .holo-card__shine {
+  display: none;
+}
+
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  html:not([data-motion="full"]) .anime-reveal,
+  html:not([data-motion="full"]) .anime-reveal[data-reveal="pending"] {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto;
   }
 
   .holo-card__rotator {

@@ -14,6 +14,7 @@ import { ChatOpcionCard } from "../components/ChatOpcionCard";
 
 import { Breadcrumbs } from "@/components/ui/molecules/Breadcrumbs";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
+import { MotionReveal } from "@/components/ui/motion/MotionReveal";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 import {
   getFichasConChat,
@@ -113,14 +114,20 @@ export function ChatSelectorPage() {
           title="Agente Xila · una voz por sala"
         />
         <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {salasConAgente.map((sala) =>
+          {salasConAgente.map((sala, index) =>
             sala.agenteXilaUbicado ? (
-              <ChatOpcionCard
+              <MotionReveal
                 key={sala.id}
-                config={sala.agenteXilaUbicado}
-                contexto={`Sala: ${sala.nombre}`}
-                href={`/chat/sala/${sala.id}`}
-              />
+                interactive
+                className="h-full"
+                index={index}
+              >
+                <ChatOpcionCard
+                  config={sala.agenteXilaUbicado}
+                  contexto={`Sala: ${sala.nombre}`}
+                  href={`/chat/sala/${sala.id}`}
+                />
+              </MotionReveal>
             ) : null,
           )}
         </div>
@@ -133,11 +140,25 @@ export function ChatSelectorPage() {
           title="Personajes y agrupación invitada"
         />
         <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {fichas.map((ficha) =>
+          {fichas.map((ficha, index) =>
             ficha.tipo === "agrupacion" ? (
-              <AgrupacionCard key={ficha.id} agrupacion={ficha} />
+              <MotionReveal
+                key={ficha.id}
+                interactive
+                className="h-full"
+                index={index}
+              >
+                <AgrupacionCard agrupacion={ficha} />
+              </MotionReveal>
             ) : (
-              <PersonajeCard key={ficha.id} personaje={ficha} />
+              <MotionReveal
+                key={ficha.id}
+                interactive
+                className="h-full"
+                index={index}
+              >
+                <PersonajeCard personaje={ficha} />
+              </MotionReveal>
             ),
           )}
         </div>
@@ -149,13 +170,14 @@ export function ChatSelectorPage() {
           title="Lo que podés esperar de la conversación"
         />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {claves.map((clave) => {
+          {claves.map((clave, index) => {
             const Icono = clave.icono;
 
             return (
-              <div
+              <MotionReveal
                 key={clave.titulo}
                 className="rounded-2xl border border-border bg-surface p-5"
+                index={index}
               >
                 <span className="grid size-10 place-items-center rounded-xl bg-surface-secondary">
                   <Icono aria-hidden="true" className="size-5" />
@@ -164,7 +186,7 @@ export function ChatSelectorPage() {
                 <p className="mt-1.5 text-xs leading-relaxed text-muted">
                   {clave.descripcion}
                 </p>
-              </div>
+              </MotionReveal>
             );
           })}
         </div>

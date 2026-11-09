@@ -8,8 +8,8 @@ import { SearchX } from "lucide-react";
 import { AgrupacionCard } from "./AgrupacionCard";
 import { PersonajeCard } from "./PersonajeCard";
 
-import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
 import { EmptyState } from "@/components/ui/molecules/EmptyState";
+import { MotionReveal } from "@/components/ui/motion/MotionReveal";
 import { SearchInput } from "@/components/ui/molecules/SearchInput";
 
 const filtros = [
@@ -69,11 +69,12 @@ export function PersonajesCatalogo({
           {filtros.map((item) => (
             <button
               key={item.id}
+              aria-controls="resultados-personajes"
               aria-pressed={filtro === item.id}
               className={
                 filtro === item.id
-                  ? "shrink-0 rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background transition-colors"
-                  : "shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground"
+                  ? "shrink-0 rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  : "shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               }
               type="button"
               onClick={() => setFiltro(item.id)}
@@ -85,6 +86,7 @@ export function PersonajesCatalogo({
 
         <SearchInput
           className="w-full lg:max-w-xs"
+          controls="resultados-personajes"
           label="Buscar personajes y agrupaciones"
           placeholder="Buscar por nombre o descripción…"
           value={consulta}
@@ -92,42 +94,62 @@ export function PersonajesCatalogo({
         />
       </div>
 
-      <p className="mt-4 text-xs font-medium text-muted" role="status">
-        {filtradas.length}{" "}
-        {filtradas.length === 1 ? "ficha encontrada" : "fichas encontradas"}
-        {consulta.trim() ? ` para «${consulta.trim()}»` : ""}
-      </p>
+      <div id="resultados-personajes">
+        <p className="mt-4 text-xs font-medium text-muted" role="status">
+          {filtradas.length}{" "}
+          {filtradas.length === 1 ? "ficha encontrada" : "fichas encontradas"}
+          {consulta.trim() ? ` para «${consulta.trim()}»` : ""}
+        </p>
 
-      {filtradas.length > 0 ? (
-        <div className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {filtradas.map((ficha) =>
-            ficha.tipo === "agrupacion" ? (
-              <AgrupacionCard key={ficha.id} agrupacion={ficha} />
-            ) : (
-              <PersonajeCard key={ficha.id} personaje={ficha} />
-            ),
-          )}
-        </div>
-      ) : (
-        <EmptyState
-          action={
-            <ButtonLink
-              href="/personajes"
-              variant="outline"
-              onClick={() => {
-                setConsulta("");
-                setFiltro("todos");
-              }}
-            >
-              Limpiar filtros
-            </ButtonLink>
-          }
-          className="mt-6"
-          description="Probá con otra palabra o volvé a «Todas las voces»."
-          icon={SearchX}
-          title="No encontramos esa ficha"
-        />
-      )}
+        {filtradas.length > 0 ? (
+          <div className="mt-5 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {filtradas.map((ficha, index) =>
+              ficha.tipo === "agrupacion" ? (
+                <MotionReveal
+                  key={ficha.id}
+                  interactive
+                  className="h-full"
+                  index={index}
+                >
+                  <AgrupacionCard agrupacion={ficha} />
+                </MotionReveal>
+              ) : (
+                <MotionReveal
+                  key={ficha.id}
+                  interactive
+                  className="h-full"
+                  index={index}
+                >
+                  <PersonajeCard personaje={ficha} />
+                </MotionReveal>
+              ),
+            )}
+          </div>
+        ) : (
+          <EmptyState
+            action={
+              <button
+                className="inline-flex items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                type="button"
+                onClick={() => {
+                  setConsulta("");
+                  setFiltro("todos");
+                }}
+              >
+                Limpiar filtros
+              </button>
+            }
+            className="mt-6"
+            description={
+              consulta.trim()
+                ? `No encontramos coincidencias para «${consulta.trim()}». Probá con otra palabra o volvé a «Todas las voces».`
+                : "Probá con otro filtro o volvé a «Todas las voces»."
+            }
+            icon={SearchX}
+            title="No encontramos esa ficha"
+          />
+        )}
+      </div>
     </div>
   );
 }
