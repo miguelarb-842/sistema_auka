@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 
 import { ThemeProvider } from "next-themes";
 
+import { PerfilOnboardingGate } from "@/modules/configuracion/components/PerfilOnboardingGate";
 import { PreferenciasProvider } from "@/modules/configuracion/context/PreferenciasProvider";
-import { PerfilOnboarding } from "@/modules/configuracion/components/PerfilOnboarding";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -18,7 +18,7 @@ export function Providers({ children }: { children: ReactNode }) {
     >
       <PreferenciasProvider>
         {children}
-        <PerfilOnboarding />
+        <PerfilOnboardingGate />
       </PreferenciasProvider>
     </ThemeProvider>
   );

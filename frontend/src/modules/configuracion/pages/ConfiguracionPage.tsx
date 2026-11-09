@@ -1,6 +1,9 @@
 "use client";
 
-import type { TamanoTexto } from "../types/preferencias.types";
+import type {
+  MovimientoPreferido,
+  TamanoTexto,
+} from "../types/preferencias.types";
 
 import { useEffect, useState } from "react";
 import {
@@ -10,6 +13,7 @@ import {
   RotateCcw,
   Settings2,
   ShieldCheck,
+  Sparkles,
   Sun,
   Type,
   UserRound,
@@ -38,6 +42,31 @@ const opcionesTema = [
     descripcion:
       "Fondo oscuro para reducir el brillo en ambientes con poca luz.",
     icono: Moon,
+  },
+];
+
+const opcionesMovimiento: Array<{
+  id: MovimientoPreferido;
+  etiqueta: string;
+  descripcion: string;
+}> = [
+  {
+    id: "sistema",
+    etiqueta: "Automático",
+    descripcion:
+      "Respeta la preferencia de movimiento configurada en tu sistema operativo.",
+  },
+  {
+    id: "reducido",
+    etiqueta: "Reducido",
+    descripcion:
+      "Desactiva animaciones no esenciales y transiciones largas. Recomendado si te marean los movimientos.",
+  },
+  {
+    id: "completo",
+    etiqueta: "Completo",
+    descripcion:
+      "Habilita las animaciones de Anime.js aunque el sistema pida reducirlas.",
   },
 ];
 
@@ -72,10 +101,12 @@ export function ConfiguracionPage() {
   const {
     perfil,
     tamanoTexto,
+    movimiento,
     tienePerfil,
     hidratado,
     setPerfil,
     setTamanoTexto,
+    setMovimiento,
     resetearPreferencias,
   } = usePreferencias();
   const [montado, setMontado] = useState(false);
@@ -90,6 +121,9 @@ export function ConfiguracionPage() {
     perfiles.find((item) => item.id === perfil) ?? perfiles[1];
   const tamanoActivo =
     opcionesTamano.find((item) => item.id === tamanoTexto) ?? opcionesTamano[1];
+  const movimientoActivo =
+    opcionesMovimiento.find((item) => item.id === movimiento) ??
+    opcionesMovimiento[0];
 
   function restablecer() {
     resetearPreferencias();
@@ -157,7 +191,7 @@ export function ConfiguracionPage() {
                     key={opcion.id}
                     aria-pressed={activo}
                     className={cn(
-                      "flex flex-col items-start gap-3 rounded-2xl border p-4 text-left transition-colors",
+                      "flex flex-col items-start gap-3 rounded-2xl border p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
                       activo
                         ? "border-foreground/40 bg-surface-secondary"
                         : "border-border bg-background hover:border-foreground/25",
@@ -223,7 +257,7 @@ export function ConfiguracionPage() {
                     key={opcion.id}
                     aria-pressed={activo}
                     className={cn(
-                      "flex items-start gap-4 rounded-2xl border p-4 text-left transition-colors",
+                      "flex items-start gap-4 rounded-2xl border p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
                       activo
                         ? "border-foreground/40 bg-surface-secondary"
                         : "border-border bg-background hover:border-foreground/25",
@@ -305,7 +339,7 @@ export function ConfiguracionPage() {
                     key={opcion.id}
                     aria-pressed={activo}
                     className={cn(
-                      "flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-colors",
+                      "flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
                       activo
                         ? "border-foreground/40 bg-surface-secondary"
                         : "border-border bg-background hover:border-foreground/25",
@@ -339,6 +373,82 @@ export function ConfiguracionPage() {
               })}
             </div>
           </section>
+
+          <section
+            aria-labelledby="titulo-movimiento"
+            className="rounded-3xl border border-border bg-surface p-5 sm:p-6"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="auka-eyebrow flex items-center gap-1.5">
+                  <Sparkles aria-hidden="true" className="size-3.5" />
+                  Movimiento
+                </p>
+                <h2
+                  className="mt-2 text-lg font-semibold"
+                  id="titulo-movimiento"
+                >
+                  Animaciones de la experiencia
+                </h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted">
+                  Las animaciones son decorativas: nunca bloquean la lectura ni
+                  la conversación. Podés reducirlas o desactivarlas.
+                </p>
+              </div>
+              <Chip size="sm" variant="soft">
+                {movimientoActivo.etiqueta}
+              </Chip>
+            </div>
+
+            <div
+              aria-label="Elegir preferencia de movimiento"
+              className="mt-5 grid gap-3"
+              role="group"
+            >
+              {opcionesMovimiento.map((opcion) => {
+                const activo = movimiento === opcion.id;
+
+                return (
+                  <button
+                    key={opcion.id}
+                    aria-pressed={activo}
+                    className={cn(
+                      "flex items-start gap-3 rounded-2xl border p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus",
+                      activo
+                        ? "border-foreground/40 bg-surface-secondary"
+                        : "border-border bg-background hover:border-foreground/25",
+                    )}
+                    type="button"
+                    onClick={() => setMovimiento(opcion.id)}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl",
+                        activo
+                          ? "bg-foreground text-background"
+                          : "bg-surface text-foreground",
+                      )}
+                    >
+                      {activo ? (
+                        <Check className="size-4" />
+                      ) : (
+                        <Sparkles className="size-4" />
+                      )}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold">
+                        {opcion.etiqueta}
+                      </span>
+                      <span className="mt-0.5 block text-xs leading-relaxed text-muted">
+                        {opcion.descripcion}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
         </div>
 
         <aside className="space-y-5">
@@ -363,6 +473,12 @@ export function ConfiguracionPage() {
                   {tamanoActivo.etiqueta}
                 </dd>
               </div>
+              <div className="flex items-start justify-between gap-3 border-b border-separator pb-3">
+                <dt className="text-muted">Movimiento</dt>
+                <dd className="text-right font-semibold">
+                  {movimientoActivo.etiqueta}
+                </dd>
+              </div>
               <div className="flex items-start justify-between gap-3">
                 <dt className="text-muted">Tema</dt>
                 <dd className="text-right font-semibold">
@@ -385,17 +501,19 @@ export function ConfiguracionPage() {
             tono="success"
           >
             Estas preferencias se guardan solo en este navegador con las claves{" "}
-            <code>auka:perfil</code>, <code>auka:tipografia</code> y{" "}
-            <code>auka:tema</code>. El perfil activo se envía con cada mensaje
-            de chat para adaptar la respuesta; no se usa para crear una cuenta.
+            <code>auka:perfil</code>, <code>auka:tipografia</code>,{" "}
+            <code>auka:movimiento</code> y <code>auka:tema</code>. El perfil
+            activo se envía con cada mensaje de chat para adaptar la respuesta;
+            no se usa para crear una cuenta.
           </InfoCallout>
 
           <div className="rounded-3xl border border-border bg-surface p-5">
             <p className="auka-eyebrow">Restablecer</p>
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Vuelve al perfil adolescente, al tamaño normal y al tema claro, y
-              borra las preferencias guardadas. No elimina el historial de la
-              conversación abierta; para eso usá Reiniciar en el chat.
+              Vuelve al perfil adolescente, al tamaño normal, al movimiento
+              automático y al tema claro, y borra las preferencias guardadas. No
+              elimina el historial de la conversación abierta; para eso usá
+              Reiniciar en el chat.
             </p>
             <Button
               fullWidth

@@ -49,7 +49,7 @@ export function PerfilOnboarding() {
                         <span className="text-base font-semibold">
                           {perfil.nombre}
                         </span>
-                        <span className="rounded-full bg-default-soft px-2 py-0.5 text-[0.68rem] font-medium text-muted">
+                        <span className="rounded-full bg-default-soft px-2 py-0.5 text-[0.68rem] font-medium text-foreground">
                           {perfil.edadSugerida}
                         </span>
                       </span>

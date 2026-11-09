@@ -1,10 +1,15 @@
 import type { PerfilId } from "@/types/perfil.types";
-import type { TamanoTexto } from "../types/preferencias.types";
+import type {
+  MovimientoPreferido,
+  MovimientoResuelto,
+  TamanoTexto,
+} from "../types/preferencias.types";
 
 export const STORAGE_KEYS = {
   perfil: "auka:perfil",
   tipografia: "auka:tipografia",
   tema: "auka:tema",
+  movimiento: "auka:movimiento",
 } as const;
 
 function puedeUsarStorage(): boolean {
@@ -73,6 +78,68 @@ export function guardarTamanoTexto(tamano: TamanoTexto): void {
   }
 }
 
+export function leerMovimiento(): MovimientoPreferido | null {
+  if (!puedeUsarStorage()) {
+    return null;
+  }
+
+  try {
+    const valor = window.localStorage.getItem(STORAGE_KEYS.movimiento);
+
+    if (valor === "sistema" || valor === "reducido" || valor === "completo") {
+      return valor;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function guardarMovimiento(movimiento: MovimientoPreferido): void {
+  if (!puedeUsarStorage()) {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(STORAGE_KEYS.movimiento, movimiento);
+  } catch {
+    // El almacenamiento puede estar deshabilitado; la sesión sigue funcionando.
+  }
+}
+
+export function resolverMovimiento(
+  preferencia: MovimientoPreferido,
+): MovimientoResuelto {
+  if (preferencia === "reducido") {
+    return "reduced";
+  }
+
+  if (preferencia === "completo") {
+    return "full";
+  }
+
+  if (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return "reduced";
+  }
+
+  return "full";
+}
+
+export function aplicarMovimientoEnDocumento(
+  preferencia: MovimientoPreferido,
+): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  document.documentElement.dataset.motion = resolverMovimiento(preferencia);
+}
+
 export function aplicarPerfilEnDocumento(perfil: PerfilId): void {
   if (typeof document === "undefined") {
     return;
@@ -97,6 +164,7 @@ export function limpiarPreferencias(): void {
   try {
     window.localStorage.removeItem(STORAGE_KEYS.perfil);
     window.localStorage.removeItem(STORAGE_KEYS.tipografia);
+    window.localStorage.removeItem(STORAGE_KEYS.movimiento);
   } catch {
     // El almacenamiento puede estar deshabilitado; no hay nada más que limpiar.
   }
