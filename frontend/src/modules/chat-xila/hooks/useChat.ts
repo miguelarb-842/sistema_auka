@@ -13,6 +13,8 @@ import { usePreferencias } from "@/modules/configuracion/context/PreferenciasPro
 
 const MENSAJE_ERROR =
   "No se pudo conectar con el agente en este momento. Revisá la conexión e intentá de nuevo.";
+const MENSAJE_DETENIDO =
+  "Respuesta detenida. Podés reformular la pregunta o escribir otra.";
 const PREFIJO_SESION = "auka:chat:sesion:";
 
 function crearBienvenida(config: ConfigChat, perfil: PerfilId): Mensaje {
@@ -21,7 +23,9 @@ function crearBienvenida(config: ConfigChat, perfil: PerfilId): Mensaje {
     autor: "asistente",
     contenido: config.bienvenida[perfil],
     tipo: "texto",
-    timestamp: Date.now(),
+    // La bienvenida no lleva hora: un timestamp generado en el servidor
+    // estático no coincidiría con el del cliente y rompería la hidratación.
+    timestamp: 0,
   };
 }
 
@@ -70,12 +74,16 @@ export function useChat(config: ConfigChat) {
     crearBienvenida(config, perfil),
   ]);
   const [escribiendo, setEscribiendo] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [puedeReintentar, setPuedeReintentar] = useState(false);
+
   const solicitudRef = useRef(0);
   const enviandoRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const sesionRef = useRef<string | null>(null);
   const perfilAnteriorRef = useRef(perfil);
   const configAnteriorRef = useRef(config.id);
+  const ultimoFallidoRef = useRef<string | null>(null);
 
   const obtenerSesionId = useCallback((): string => {
     if (sesionRef.current) {
@@ -89,6 +97,12 @@ export function useChat(config: ConfigChat) {
 
     return sesion;
   }, [config.id]);
+
+  const limpiarEstadoError = useCallback(() => {
+    setError(null);
+    setPuedeReintentar(false);
+    ultimoFallidoRef.current = null;
+  }, []);
 
   const cancelarRespuestaPendiente = useCallback(() => {
     solicitudRef.current += 1;
@@ -111,6 +125,7 @@ export function useChat(config: ConfigChat) {
     perfilAnteriorRef.current = perfil;
     configAnteriorRef.current = config.id;
     cancelarRespuestaPendiente();
+    limpiarEstadoError();
 
     if (cambioConfig) {
       eliminarSesion(configAnterior);
@@ -122,7 +137,7 @@ export function useChat(config: ConfigChat) {
 
     sesionRef.current = null;
     setMensajes([crearBienvenida(config, perfil)]);
-  }, [config, cancelarRespuestaPendiente, perfil]);
+  }, [config, cancelarRespuestaPendiente, limpiarEstadoError, perfil]);
 
   useEffect(() => {
     return () => {
@@ -132,12 +147,15 @@ export function useChat(config: ConfigChat) {
     };
   }, []);
 
-  const enviar = useCallback(
-    async (textoIngresado: string) => {
+  const ejecutarEnvio = useCallback(
+    async (
+      textoIngresado: string,
+      agregarVisitante: boolean,
+    ): Promise<boolean> => {
       const texto = textoIngresado.trim();
 
       if (!texto || enviandoRef.current) {
-        return;
+        return false;
       }
 
       const solicitud = solicitudRef.current + 1;
@@ -148,16 +166,21 @@ export function useChat(config: ConfigChat) {
       solicitudRef.current = solicitud;
       enviandoRef.current = true;
       abortRef.current = controller;
+      setError(null);
+      setPuedeReintentar(false);
 
-      const mensajeVisitante: Mensaje = {
-        id: crearId("visitante"),
-        autor: "visitante",
-        contenido: texto,
-        tipo: "texto",
-        timestamp: Date.now(),
-      };
+      if (agregarVisitante) {
+        const mensajeVisitante: Mensaje = {
+          id: crearId("visitante"),
+          autor: "visitante",
+          contenido: texto,
+          tipo: "texto",
+          timestamp: Date.now(),
+        };
 
-      setMensajes((anteriores) => [...anteriores, mensajeVisitante]);
+        setMensajes((anteriores) => [...anteriores, mensajeVisitante]);
+      }
+
       setEscribiendo(true);
 
       try {
@@ -172,11 +195,12 @@ export function useChat(config: ConfigChat) {
         );
 
         if (solicitud !== solicitudRef.current) {
-          return;
+          return false;
         }
 
         sesionRef.current = datos.sesionId;
         guardarSesion(config.id, datos.sesionId);
+        ultimoFallidoRef.current = null;
         setMensajes((anteriores) => [
           ...anteriores,
           {
@@ -187,24 +211,23 @@ export function useChat(config: ConfigChat) {
             timestamp: datos.respuesta.timestamp,
           },
         ]);
-      } catch (error) {
+
+        return true;
+      } catch (fallo) {
         if (controller.signal.aborted || solicitud !== solicitudRef.current) {
-          return;
+          return false;
         }
 
         const contenido =
-          error instanceof ErrorChatApi ? error.message : MENSAJE_ERROR;
+          fallo instanceof ErrorChatApi ? fallo.message : MENSAJE_ERROR;
 
-        setMensajes((anteriores) => [
-          ...anteriores,
-          {
-            id: crearId("sistema"),
-            autor: "asistente",
-            contenido,
-            tipo: "sistema",
-            timestamp: Date.now(),
-          },
-        ]);
+        ultimoFallidoRef.current = texto;
+        setError(contenido);
+        setPuedeReintentar(true);
+
+        // El error se muestra en el banner accesible sobre el compositor;
+        // no se duplica como mensaje dentro del historial.
+        return true;
       } finally {
         if (solicitud === solicitudRef.current) {
           enviandoRef.current = false;
@@ -216,25 +239,65 @@ export function useChat(config: ConfigChat) {
     [config.id, obtenerSesionId, perfil],
   );
 
+  const enviar = useCallback(
+    (texto: string) => ejecutarEnvio(texto, true),
+    [ejecutarEnvio],
+  );
+
+  const detener = useCallback(() => {
+    if (!enviandoRef.current) {
+      return;
+    }
+
+    cancelarRespuestaPendiente();
+    limpiarEstadoError();
+    setMensajes((anteriores) => [
+      ...anteriores,
+      {
+        id: crearId("sistema"),
+        autor: "asistente",
+        contenido: MENSAJE_DETENIDO,
+        tipo: "sistema",
+        timestamp: Date.now(),
+      },
+    ]);
+  }, [cancelarRespuestaPendiente, limpiarEstadoError]);
+
+  const reintentar = useCallback(async (): Promise<boolean> => {
+    const texto = ultimoFallidoRef.current;
+
+    if (!texto) {
+      return false;
+    }
+
+    return ejecutarEnvio(texto, false);
+  }, [ejecutarEnvio]);
+
+  const descartarError = useCallback(() => {
+    limpiarEstadoError();
+  }, [limpiarEstadoError]);
+
   const reiniciar = useCallback(() => {
     cancelarRespuestaPendiente();
+    limpiarEstadoError();
     eliminarSesion(config.id);
     sesionRef.current = null;
     setMensajes([crearBienvenida(config, perfil)]);
-  }, [cancelarRespuestaPendiente, config, perfil]);
+  }, [cancelarRespuestaPendiente, limpiarEstadoError, config, perfil]);
 
-  const pedirReto = useCallback(() => {
-    void enviar("Proponeme un reto");
-  }, [enviar]);
+  const pedirReto = useCallback(() => enviar("Proponeme un reto"), [enviar]);
 
-  const pedirPista = useCallback(() => {
-    void enviar("Dame una pista");
-  }, [enviar]);
+  const pedirPista = useCallback(() => enviar("Dame una pista"), [enviar]);
 
   return {
     mensajes,
     escribiendo,
+    error,
+    puedeReintentar,
     enviar,
+    detener,
+    reintentar,
+    descartarError,
     reiniciar,
     pedirReto,
     pedirPista,

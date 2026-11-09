@@ -8,6 +8,7 @@ import { CircleHelp, Lightbulb, Trophy } from "lucide-react";
 import { Button } from "@heroui/react";
 
 import { cn, formatearHora } from "@/lib/utils";
+import { MotionReveal } from "@/components/ui/motion/MotionReveal";
 
 interface MessageBubbleProps {
   mensaje: Mensaje;
@@ -31,7 +32,7 @@ export function MessageBubble({
   const esVisitante = mensaje.autor === "visitante";
 
   if (mensaje.tipo === "sistema") {
-    return (
+    const aviso = (
       <p
         className="mx-auto flex max-w-md items-start gap-2 rounded-xl border border-warning/30 bg-warning-soft/40 px-3 py-2 text-xs leading-relaxed text-muted"
         role="status"
@@ -43,9 +44,11 @@ export function MessageBubble({
         {mensaje.contenido}
       </p>
     );
+
+    return mensaje.timestamp > 0 ? <MotionReveal>{aviso}</MotionReveal> : aviso;
   }
 
-  return (
+  const burbuja = (
     <article
       className={cn(
         "flex w-full gap-3",
@@ -128,12 +131,24 @@ export function MessageBubble({
           <span className="max-w-[14rem] truncate">
             {esVisitante ? "Vos" : config.nombreVisible}
           </span>
-          <span aria-hidden="true">·</span>
-          <time dateTime={new Date(mensaje.timestamp).toISOString()}>
-            {formatearHora(mensaje.timestamp)}
-          </time>
+          {mensaje.timestamp > 0 ? (
+            <>
+              <span aria-hidden="true">·</span>
+              <time dateTime={new Date(mensaje.timestamp).toISOString()}>
+                {formatearHora(mensaje.timestamp)}
+              </time>
+            </>
+          ) : null}
         </p>
       </div>
     </article>
+  );
+
+  // La bienvenida no se anima con Anime.js: así el chunk de la librería no se
+  // descarga durante la carga inicial del chat. Los mensajes nuevos sí.
+  return mensaje.timestamp > 0 ? (
+    <MotionReveal>{burbuja}</MotionReveal>
+  ) : (
+    burbuja
   );
 }

@@ -2,10 +2,11 @@
 
 import type { ConfigChat } from "@/modules/museo/types/museo.types";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  AlertTriangle,
   ArrowLeft,
   BookOpen,
   CircleHelp,
@@ -23,6 +24,7 @@ import { MessageBubble } from "./MessageBubble";
 import { SuggestedQuestions } from "./SuggestedQuestions";
 import { TypingIndicator } from "./TypingIndicator";
 
+import { BrandLogo } from "@/components/ui/atoms/BrandLogo";
 import { ButtonLink } from "@/components/ui/atoms/ButtonLink";
 import { Breadcrumbs } from "@/components/ui/molecules/Breadcrumbs";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
@@ -65,14 +67,27 @@ export function ChatConversacion({
 }: ChatConversacionProps) {
   const { perfil } = usePreferencias();
   const perfilActivo = getPerfil(perfil);
-  const { mensajes, escribiendo, enviar, reiniciar, pedirReto, pedirPista } =
-    useChat(config);
+  const {
+    mensajes,
+    escribiendo,
+    error,
+    puedeReintentar,
+    enviar,
+    detener,
+    reintentar,
+    reiniciar,
+    pedirReto,
+    pedirPista,
+    descartarError,
+  } = useChat(config);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const autoScrollRef = useRef(true);
+  const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
 
   useEffect(() => {
     const contenedor = scrollRef.current;
 
-    if (!contenedor) {
+    if (!contenedor || !autoScrollRef.current) {
       return;
     }
 
@@ -81,6 +96,34 @@ export function ChatConversacion({
       behavior: "smooth",
     });
   }, [mensajes.length, escribiendo]);
+
+  const enviarConScroll = async (texto: string): Promise<boolean> => {
+    autoScrollRef.current = true;
+
+    return enviar(texto);
+  };
+
+  const reintentarConScroll = async (): Promise<boolean> => {
+    autoScrollRef.current = true;
+
+    return reintentar();
+  };
+
+  const pedirRetoConScroll = () => {
+    autoScrollRef.current = true;
+    void pedirReto();
+  };
+
+  const pedirPistaConScroll = () => {
+    autoScrollRef.current = true;
+    void pedirPista();
+  };
+
+  const confirmarReinicio = () => {
+    reiniciar();
+    setConfirmandoReinicio(false);
+    autoScrollRef.current = true;
+  };
 
   return (
     <div className="auka-container pb-12 pt-6">
@@ -138,10 +181,36 @@ export function ChatConversacion({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" variant="outline" onPress={reiniciar}>
-            <RotateCcw aria-hidden="true" className="size-4" />
-            Reiniciar
-          </Button>
+          {confirmandoReinicio ? (
+            <div
+              aria-live="polite"
+              className="flex flex-wrap items-center gap-2 rounded-2xl border border-warning/40 bg-warning-soft/40 px-3 py-2"
+              role="group"
+            >
+              <span className="text-xs font-medium">
+                ¿Reiniciar la conversación?
+              </span>
+              <Button size="sm" variant="outline" onPress={confirmarReinicio}>
+                Sí, reiniciar
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onPress={() => setConfirmandoReinicio(false)}
+              >
+                Cancelar
+              </Button>
+            </div>
+          ) : (
+            <Button
+              size="sm"
+              variant="outline"
+              onPress={() => setConfirmandoReinicio(true)}
+            >
+              <RotateCcw aria-hidden="true" className="size-4" />
+              Reiniciar
+            </Button>
+          )}
           <ButtonLink href="/chat" size="sm" variant="ghost">
             <ArrowLeft aria-hidden="true" className="size-4" />
             Cambiar conversación
@@ -151,9 +220,13 @@ export function ChatConversacion({
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex h-[min(780px,calc(100dvh-12rem))] min-h-[560px] flex-col overflow-hidden rounded-3xl border border-border bg-surface">
-          <div className="flex items-center justify-between gap-3 border-b border-separator bg-background/60 px-4 py-3">
+          <div className="flex flex-col gap-2 border-b border-separator bg-background/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <BrandLogo className="w-24 shrink-0 sm:w-[120px]" marca="xila" />
             <p className="flex items-center gap-2 text-xs font-medium text-muted">
-              <CircleHelp aria-hidden="true" className="size-4 text-warning" />
+              <CircleHelp
+                aria-hidden="true"
+                className="size-4 shrink-0 text-warning"
+              />
               Contenido demostrativo · Por verificar
             </p>
             <Link
@@ -168,8 +241,22 @@ export function ChatConversacion({
             ref={scrollRef}
             aria-label={`Conversación con ${config.nombreVisible}`}
             aria-live="polite"
+            aria-relevant="additions text"
             className="chat-scroll flex-1 space-y-5 overflow-y-auto p-4 sm:p-6"
             role="log"
+            onScroll={() => {
+              const contenedor = scrollRef.current;
+
+              if (!contenedor) {
+                return;
+              }
+
+              autoScrollRef.current =
+                contenedor.scrollHeight -
+                  contenedor.scrollTop -
+                  contenedor.clientHeight <
+                140;
+            }}
           >
             {mensajes.map((mensaje) => (
               <MessageBubble
@@ -184,19 +271,58 @@ export function ChatConversacion({
             ) : null}
           </div>
 
+          {error ? (
+            <div
+              className="border-t border-danger/30 bg-danger-soft/40 px-4 py-3"
+              role="alert"
+            >
+              <div className="flex items-start gap-2.5">
+                <AlertTriangle
+                  aria-hidden="true"
+                  className="mt-0.5 size-4 shrink-0 text-danger"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold">
+                    No se pudo obtener la respuesta
+                  </p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-muted">
+                    {error}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {puedeReintentar ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onPress={() => void reintentarConScroll()}
+                      >
+                        <RotateCcw aria-hidden="true" className="size-3.5" />
+                        Reintentar
+                      </Button>
+                    ) : null}
+                    <Button size="sm" variant="ghost" onPress={descartarError}>
+                      Descartar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <div className="border-t border-separator bg-background/60 p-3 sm:p-4">
             <SuggestedQuestions
               deshabilitado={escribiendo}
               preguntas={config.preguntasSugeridas[perfil]}
-              onPedirPista={pedirPista}
-              onPedirReto={pedirReto}
-              onPreguntar={(pregunta) => void enviar(pregunta)}
+              onPedirPista={pedirPistaConScroll}
+              onPedirReto={pedirRetoConScroll}
+              onPreguntar={(pregunta) => void enviarConScroll(pregunta)}
             />
             <div className="mt-3">
               <ChatComposer
-                deshabilitado={escribiendo}
+                generando={escribiendo}
+                idConversacion={config.id}
                 nombreAsistente={config.nombreVisible}
-                onEnviar={(texto) => void enviar(texto)}
+                onDetener={detener}
+                onEnviar={enviarConScroll}
               />
             </div>
             <p className="mt-2 px-1 text-[0.65rem] leading-relaxed text-muted">
@@ -262,7 +388,7 @@ export function ChatConversacion({
                 isDisabled={escribiendo}
                 size="sm"
                 variant="outline"
-                onPress={pedirReto}
+                onPress={pedirRetoConScroll}
               >
                 <Trophy aria-hidden="true" className="size-4" />
                 Proponeme un reto
@@ -271,7 +397,7 @@ export function ChatConversacion({
                 isDisabled={escribiendo}
                 size="sm"
                 variant="ghost"
-                onPress={pedirPista}
+                onPress={pedirPistaConScroll}
               >
                 <Sparkles aria-hidden="true" className="size-4" />
                 Pedir una pista
