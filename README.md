@@ -48,16 +48,41 @@
 
 ## La idea
 
-**Sistema Auka** es un producto educativo pensado para instalarse en distintos museos. Cada institución recibe un paquete de contenido propio con sus salas, su guía general, sus agentes Xila y sus conversaciones con personajes y agrupaciones.
+**Sistema Auka** es un producto educativo pensado para instalarse en museos, centros históricos y bibliotecas. Cada institución recibe un paquete de contenido propio con sus salas, su guía general, sus agentes Xila y sus conversaciones con personajes y agrupaciones.
 
-Este repositorio contiene una **simulación completa de esa instalación** en el **Museo Lolita Soriano**, en Managua, Nicaragua. Se puede recorrer, preguntar y conversar: la experiencia está construida de punta a punta, pero su contenido sigue siendo demostrativo y debe validarse con el museo.
+> **El problema que origina Auka.** Muchas instituciones culturales no tienen guías permanentes; la información llega descoordinada y la IA genérica suele entregar respuestas listas para copiar. Auka propone acompañar el recorrido con preguntas, retos y contenido bajo control de la institución.
+
+**Xila no reemplaza a los guías: los acompaña.** La experiencia está pensada para ampliar la conversación y el tiempo de atención, no para sustituir el trabajo humano. La meta no es que el visitante se lleve una respuesta para copiar, sino una pregunta para seguir pensando.
+
+Este repositorio contiene una **simulación completa de esa instalación** en el **Museo Lolita Soriano**, en Managua, Nicaragua. Se puede recorrer, preguntar y conversar: la experiencia web está construida de punta a punta, pero su contenido sigue siendo demostrativo y debe validarse con el museo.
 
 | Sistema Auka | Esta simulación |
 | --- | --- |
-| Producto instalable en museos | Museo Lolita Soriano |
+| Producto instalable en museos, centros históricos y bibliotecas | Museo Lolita Soriano |
 | Paquete de contenido por institución | 10 salas, 3 agentes Xila, 3 personajes y 1 agrupación invitada |
 | Conversaciones adaptadas al visitante | 3 perfiles: Niño, Adolescente y Adulto |
 | Interfaz + BFF + agente conversacional | Next.js 16, API propia y workflow de n8n con Gemini |
+
+### Los nombres
+
+La narrativa del proyecto une dos raíces originarias de Nicaragua:
+
+| Nombre | Raíz | Sentido |
+| --- | --- | --- |
+| **Auka** | Miskito | Asociado al Árbol de Cortés (Handroanthus chrysanthus), de madera resistente y floración amarilla. |
+| **Xila** | Chorotega-mangue | Traducido como «mujer»; una raíz precolombina del Pacífico de Nicaragua. |
+
+Esa unión simboliza la identidad pluricultural del país: la plataforma toma el nombre de Auka y la voz que acompaña al visitante, el de Xila. En la experiencia web, Xila se presenta como agente conversacional en la guía general y en tres salas; el robot físico forma parte de la propuesta completa de Auka.
+
+### Valores
+
+| Valor | Inspiración | Cómo se vive en la experiencia |
+| --- | --- | --- |
+| **Curiosidad** | El cacique Nicarao, que preguntó antes de decidir. | Xila responde con preguntas, retos y pistas. |
+| **Dignidad y valentía** | El cacique Diriangén, que pidió tiempo para responder y decidió con valentía. | Los personajes se presentan con contexto, no como caricaturas. |
+| **Veracidad** | La información documentada y contrastada. | Lo que no está documentado se marca como **por verificar**. |
+| **Identidad y memoria** | Los pueblos originarios y la historia local. | El contenido parte de Nicaragua y de sus comunidades. |
+| **Cercanía** | El trato de la comunidad. | El tono se adapta al perfil y usa un español nicaragüense claro. |
 
 ## Recorrido
 
@@ -293,7 +318,7 @@ El contenido se clasifica con tres etiquetas visibles:
 | **Interpretación** | Lecturas y análisis del equipo del museo; no son hechos cerrados. |
 | **Demostrativo** | Material introductorio de la simulación, pendiente de verificación. |
 
-En esta instalación **todo el contenido está en estado demostrativo**. Las etiquetas **Documentado** e **Interpretación** quedan preparadas para cuando el museo entregue y valide su información.
+El modelo de producto propone que el contenido sea cargado y validado por especialistas de cada institución. En esta simulación, ese proceso todavía no ocurrió: por eso **todo el contenido está en estado demostrativo**. Las etiquetas **Documentado** e **Interpretación** quedan preparadas para cuando el museo entregue y valide su información.
 
 Reglas del proyecto:
 
@@ -308,6 +333,7 @@ Reglas del proyecto:
 Este proyecto es una **demo funcional**, no un producto terminado. Lo que falta también forma parte del diseño:
 
 - **Validación editorial:** el contenido debe revisarse con el museo y pasar de demostrativo a documentado.
+- **Alcance del prototipo:** este repositorio contiene la experiencia web navegable; el robot físico y la operación en cada institución forman parte de la propuesta completa.
 - **Despliegue público:** falta publicar en un dominio estable y configurar `NEXT_PUBLIC_SITE_URL`.
 - **Persistencia:** no hay cuentas, autenticación ni base de datos de usuarios. El historial de conversación no es permanente.
 - **Dependencia externa:** el chat necesita el stack de n8n y el webhook configurado. Sin ellos, la app sigue siendo navegable, pero no conversa.
