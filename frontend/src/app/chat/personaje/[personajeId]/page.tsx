@@ -25,11 +25,11 @@ export async function generateMetadata({
   const personaje = getPersonajeById(personajeId);
 
   if (!personaje) {
-    return { title: "Chat no encontrado" };
+    return { title: "Conversación no encontrada" };
   }
 
   return {
-    title: `Chat con ${personaje.nombre}`,
+    title: `Conversación con ${personaje.nombre}`,
     description: personaje.chat.bienvenida.adolescente,
   };
 }

@@ -41,6 +41,8 @@ interface ChatComposerProps {
   onDetener?: () => void;
   generando?: boolean;
   deshabilitado?: boolean;
+  /** Cambiar este valor limpia el borrador, por ejemplo tras reintentar. */
+  limpiarVersion?: number;
 }
 
 export function ChatComposer({
@@ -50,10 +52,12 @@ export function ChatComposer({
   onDetener,
   generando = false,
   deshabilitado = false,
+  limpiarVersion = 0,
 }: ChatComposerProps) {
   const [texto, setTexto] = useState("");
   const [hidratado, setHidratado] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const versionRef = useRef(limpiarVersion);
 
   useEffect(() => {
     if (!idConversacion) {
@@ -65,6 +69,19 @@ export function ChatComposer({
     setTexto(leerBorrador(idConversacion));
     setHidratado(true);
   }, [idConversacion]);
+
+  useEffect(() => {
+    if (versionRef.current === limpiarVersion) {
+      return;
+    }
+
+    versionRef.current = limpiarVersion;
+    setTexto("");
+
+    if (idConversacion) {
+      guardarBorrador(idConversacion, "");
+    }
+  }, [idConversacion, limpiarVersion]);
 
   useEffect(() => {
     if (!hidratado || !idConversacion) {
@@ -107,6 +124,8 @@ export function ChatComposer({
     }
   }
 
+  const cercaDelLimite = LIMITE - texto.length <= 60;
+
   return (
     <form
       aria-busy={generando}
@@ -122,9 +141,9 @@ export function ChatComposer({
         </label>
         <textarea
           ref={textareaRef}
-          aria-describedby="chat-aviso"
+          aria-describedby="chat-aviso chat-contador"
           autoComplete="off"
-          className="max-h-[132px] min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted"
+          className="max-h-[132px] min-h-11 flex-1 resize-none bg-transparent px-2 py-2 text-base leading-relaxed text-foreground outline-none placeholder:text-muted sm:text-sm"
           id="mensaje-chat"
           maxLength={LIMITE}
           placeholder={
@@ -146,7 +165,7 @@ export function ChatComposer({
           <Button
             isIconOnly
             aria-label="Detener respuesta"
-            className="shrink-0 rounded-xl bg-danger text-danger-foreground"
+            className="size-11 shrink-0 rounded-xl bg-danger text-danger-foreground"
             size="md"
             type="button"
             onPress={onDetener}
@@ -158,7 +177,7 @@ export function ChatComposer({
             isIconOnly
             aria-label="Enviar mensaje"
             className={cn(
-              "shrink-0 rounded-xl transition-opacity",
+              "size-11 shrink-0 rounded-xl transition-opacity",
               !texto.trim() && "opacity-40",
             )}
             isDisabled={!texto.trim() || deshabilitado}
@@ -178,8 +197,14 @@ export function ChatComposer({
             ? "Generando respuesta… podés escribir mientras esperás."
             : "Enter para enviar · Shift + Enter para una línea nueva"}
         </p>
-        <p className="shrink-0 font-mono text-[0.65rem] text-muted">
-          {texto.length}/{LIMITE}
+        <p
+          className={cn(
+            "shrink-0 font-mono text-[0.65rem]",
+            cercaDelLimite ? "font-semibold text-warning-strong" : "text-muted",
+          )}
+          id="chat-contador"
+        >
+          {texto.length} de {LIMITE} caracteres
         </p>
       </div>
     </form>

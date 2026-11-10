@@ -83,6 +83,7 @@ export function ChatConversacion({
   const scrollRef = useRef<HTMLDivElement>(null);
   const autoScrollRef = useRef(true);
   const [confirmandoReinicio, setConfirmandoReinicio] = useState(false);
+  const [versionLimpieza, setVersionLimpieza] = useState(0);
 
   useEffect(() => {
     const contenedor = scrollRef.current;
@@ -97,6 +98,23 @@ export function ChatConversacion({
     });
   }, [mensajes.length, escribiendo]);
 
+  useEffect(() => {
+    if (!confirmandoReinicio) {
+      return;
+    }
+
+    const cerrarConEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setConfirmandoReinicio(false);
+      }
+    };
+
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => window.removeEventListener("keydown", cerrarConEscape);
+  }, [confirmandoReinicio]);
+
   const enviarConScroll = async (texto: string): Promise<boolean> => {
     autoScrollRef.current = true;
 
@@ -106,7 +124,13 @@ export function ChatConversacion({
   const reintentarConScroll = async (): Promise<boolean> => {
     autoScrollRef.current = true;
 
-    return reintentar();
+    const aceptado = await reintentar();
+
+    if (aceptado) {
+      setVersionLimpieza((version) => version + 1);
+    }
+
+    return aceptado;
   };
 
   const pedirRetoConScroll = () => {
@@ -190,10 +214,16 @@ export function ChatConversacion({
               <span className="text-xs font-medium">
                 ¿Reiniciar la conversación?
               </span>
-              <Button size="sm" variant="outline" onPress={confirmarReinicio}>
+              <Button
+                className="min-h-11"
+                size="sm"
+                variant="outline"
+                onPress={confirmarReinicio}
+              >
                 Sí, reiniciar
               </Button>
               <Button
+                className="min-h-11"
                 size="sm"
                 variant="ghost"
                 onPress={() => setConfirmandoReinicio(false)}
@@ -203,6 +233,7 @@ export function ChatConversacion({
             </div>
           ) : (
             <Button
+              className="min-h-11"
               size="sm"
               variant="outline"
               onPress={() => setConfirmandoReinicio(true)}
@@ -211,26 +242,34 @@ export function ChatConversacion({
               Reiniciar
             </Button>
           )}
-          <ButtonLink href="/chat" size="sm" variant="ghost">
+          <ButtonLink
+            className="min-h-11"
+            href="/chat"
+            size="sm"
+            variant="ghost"
+          >
             <ArrowLeft aria-hidden="true" className="size-4" />
-            Cambiar conversación
+            Volver a conversaciones
           </ButtonLink>
         </div>
       </header>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div
+        data-intro-contenido
+        className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]"
+      >
         <div className="flex h-[min(780px,calc(100dvh-12rem))] min-h-[560px] flex-col overflow-hidden rounded-3xl border border-border bg-surface">
           <div className="flex flex-col gap-2 border-b border-separator bg-background/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <BrandLogo className="w-24 shrink-0 sm:w-[120px]" marca="xila" />
             <p className="flex items-center gap-2 text-xs font-medium text-muted">
               <CircleHelp
                 aria-hidden="true"
-                className="size-4 shrink-0 text-warning"
+                className="size-4 shrink-0 text-warning-strong"
               />
               Contenido demostrativo · Por verificar
             </p>
             <Link
-              className="hidden text-xs font-medium text-muted underline decoration-border underline-offset-4 transition-colors hover:text-foreground sm:inline"
+              className="hidden min-h-11 items-center text-xs font-medium text-muted underline decoration-border underline-offset-4 transition-colors hover:text-foreground sm:inline-flex"
               href={enlaceVolver.href}
             >
               {enlaceVolver.label}
@@ -291,6 +330,7 @@ export function ChatConversacion({
                   <div className="mt-2 flex flex-wrap gap-2">
                     {puedeReintentar ? (
                       <Button
+                        className="min-h-11"
                         size="sm"
                         variant="outline"
                         onPress={() => void reintentarConScroll()}
@@ -299,7 +339,12 @@ export function ChatConversacion({
                         Reintentar
                       </Button>
                     ) : null}
-                    <Button size="sm" variant="ghost" onPress={descartarError}>
+                    <Button
+                      className="min-h-11"
+                      size="sm"
+                      variant="ghost"
+                      onPress={descartarError}
+                    >
                       Descartar
                     </Button>
                   </div>
@@ -320,6 +365,7 @@ export function ChatConversacion({
               <ChatComposer
                 generando={escribiendo}
                 idConversacion={config.id}
+                limpiarVersion={versionLimpieza}
                 nombreAsistente={config.nombreVisible}
                 onDetener={detener}
                 onEnviar={enviarConScroll}
@@ -344,18 +390,18 @@ export function ChatConversacion({
             </p>
             <div className="mt-4 grid gap-2">
               <Link
-                className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+                className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
                 href={enlaceVolver.href}
               >
                 <BookOpen aria-hidden="true" className="size-4" />
                 {enlaceVolver.label}
               </Link>
               <Link
-                className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+                className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
                 href="/chat"
               >
                 <MessageCircleQuestion aria-hidden="true" className="size-4" />
-                Ver todas las conversaciones
+                Volver a conversaciones
               </Link>
             </div>
           </div>
@@ -370,7 +416,7 @@ export function ChatConversacion({
               {perfilActivo.detalle}
             </p>
             <Link
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-foreground underline decoration-border underline-offset-4 hover:text-accent"
+              className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-xs font-semibold text-foreground underline decoration-border underline-offset-4 hover:text-accent"
               href="/configuracion"
             >
               Cambiar perfil
@@ -385,6 +431,7 @@ export function ChatConversacion({
             </p>
             <div className="mt-4 grid gap-2">
               <Button
+                className="min-h-11"
                 isDisabled={escribiendo}
                 size="sm"
                 variant="outline"
@@ -394,6 +441,7 @@ export function ChatConversacion({
                 Proponeme un reto
               </Button>
               <Button
+                className="min-h-11"
                 isDisabled={escribiendo}
                 size="sm"
                 variant="ghost"

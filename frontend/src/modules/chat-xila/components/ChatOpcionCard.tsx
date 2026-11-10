@@ -83,7 +83,7 @@ export function ChatOpcionCard({
         />
 
         <Link
-          className="mt-5 inline-flex items-center gap-1.5 border-t border-separator pt-4 text-sm font-semibold transition-colors group-hover:text-accent"
+          className="mt-5 inline-flex min-h-11 items-center gap-1.5 border-t border-separator pt-4 text-sm font-semibold transition-colors group-hover:text-accent"
           href={href}
         >
           <MessageCircleQuestion aria-hidden="true" className="size-4" />

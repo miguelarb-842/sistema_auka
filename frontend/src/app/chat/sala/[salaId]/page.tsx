@@ -23,7 +23,7 @@ export async function generateMetadata({
   const sala = getSalaById(salaId);
 
   if (!sala?.agenteXilaUbicado) {
-    return { title: "Chat no encontrado" };
+    return { title: "Conversación no encontrada" };
   }
 
   return {

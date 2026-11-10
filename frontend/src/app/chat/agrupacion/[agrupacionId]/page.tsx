@@ -25,11 +25,11 @@ export async function generateMetadata({
   const agrupacion = getAgrupacionById(agrupacionId);
 
   if (!agrupacion) {
-    return { title: "Chat no encontrado" };
+    return { title: "Conversación no encontrada" };
   }
 
   return {
-    title: `Chat con ${agrupacion.nombre}`,
+    title: `Conversación con ${agrupacion.nombre}`,
     description: agrupacion.chat.bienvenida.adolescente,
   };
 }

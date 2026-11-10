@@ -11,8 +11,9 @@ import { enviarMensajeChat, ErrorChatApi } from "../services/chat-api.service";
 import { crearId } from "@/lib/utils";
 import { usePreferencias } from "@/modules/configuracion/context/PreferenciasProvider";
 
-const MENSAJE_ERROR =
-  "No se pudo conectar con el agente en este momento. Revisá la conexión e intentá de nuevo.";
+const MENSAJE_ERROR = "No pudimos conectar. Revisá tu conexión y reintentá.";
+const MENSAJE_CONVERSACION =
+  "Esta conversación ya no está disponible. Volvé a la lista de conversaciones.";
 const MENSAJE_DETENIDO =
   "Respuesta detenida. Podés reformular la pregunta o escribir otra.";
 const PREFIJO_SESION = "auka:chat:sesion:";
@@ -218,16 +219,23 @@ export function useChat(config: ConfigChat) {
           return false;
         }
 
-        const contenido =
-          fallo instanceof ErrorChatApi ? fallo.message : MENSAJE_ERROR;
+        // El detalle técnico queda en la consola; la persona ve un mensaje
+        // breve, sin nombres de servicios ni códigos internos.
+        // eslint-disable-next-line no-console
+        console.error("[chat] No se pudo enviar el mensaje", fallo);
+
+        const conversacionPerdida =
+          fallo instanceof ErrorChatApi &&
+          fallo.codigo === "CONVERSACION_NO_ENCONTRADA";
 
         ultimoFallidoRef.current = texto;
-        setError(contenido);
-        setPuedeReintentar(true);
+        setError(conversacionPerdida ? MENSAJE_CONVERSACION : MENSAJE_ERROR);
+        setPuedeReintentar(!conversacionPerdida);
 
         // El error se muestra en el banner accesible sobre el compositor;
-        // no se duplica como mensaje dentro del historial.
-        return true;
+        // no se duplica como mensaje dentro del historial. Devolver false
+        // conserva el texto en el compositor para reintentar.
+        return false;
       } finally {
         if (solicitud === solicitudRef.current) {
           enviandoRef.current = false;
