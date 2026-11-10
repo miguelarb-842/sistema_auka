@@ -23,6 +23,7 @@
   <img alt="Tailwind CSS 4" src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white">
   <img alt="HeroUI 3" src="https://img.shields.io/badge/HeroUI-3-0B2E6F?style=flat-square">
   <img alt="n8n" src="https://img.shields.io/badge/n8n-EA4B71?style=flat-square&logo=n8n&logoColor=white">
+  <img alt="MongoDB 7" src="https://img.shields.io/badge/MongoDB-7-47A248?style=flat-square&logo=mongodb&logoColor=white">
 </p>
 
 <p align="center">
@@ -118,15 +119,17 @@ flowchart LR
     C[Paquete de contenido<br/>del museo]
   end
 
-  subgraph Automatización["Stack n8n"]
+  subgraph Automatización["Stack de automatización"]
     D[Workflow del agente]
     E[Gemini<br/>memoria + búsqueda]
+    F[(MongoDB 7)]
   end
 
   A -->|mensaje + perfil| B
   C -->|contexto tipado| B
   B -->|prompt + sessionId| D
   D --> E
+  D --- F
   E -->|respuesta| D
   D -->|texto| B
   B -->|respuesta| A
@@ -135,7 +138,7 @@ flowchart LR
 - **Next.js 16 App Router** sirve la interfaz y la API. Las rutas de `app/` solo resuelven parámetros, metadata y composición.
 - El **paquete de contenido** vive en `src/modules/museo/` y está separado de la UI. Los componentes piden datos a un servicio de solo lectura; no llevan el contenido del museo dentro.
 - El **BFF** (`/api/chat` y rutas derivadas) valida, construye el prompt y delega la conversación en n8n. Así el cliente no expone credenciales ni lógica del agente.
-- El **stack de automatización** corre aparte con Docker, Traefik y ngrok. No está incluido en este repositorio: se configura como servicio externo y se conecta mediante `N8N_CHAT_WEBHOOK_URL`.
+- El **stack de automatización** corre aparte con n8n, MongoDB 7, Traefik y ngrok. No está incluido en este repositorio: se configura como servicio externo y se conecta mediante `N8N_CHAT_WEBHOOK_URL`. MongoDB 7 completa el stack como servicio de datos para los flujos de n8n.
 - La app sigue **Screaming Architecture** para los dominios y **Atomic Design** para el sistema de diseño global.
 
 ### API propia
@@ -158,14 +161,14 @@ flowchart LR
 | Contenido | Paquete tipado del museo, servicios de lectura, Screaming Architecture + Atomic Design |
 | Servidor | Route Handlers de Next.js, validación de entrada, controllers, presenters y errores tipados |
 | Agente | n8n, Gemini, memoria por `sessionId`, búsqueda web y prompt construido en el servidor |
-| Infraestructura | Docker, Traefik y ngrok para el stack de automatización |
+| Infraestructura | Docker, n8n, MongoDB 7, Traefik y ngrok para el stack de automatización |
 | Calidad | ESLint, Prettier, `tsc --noEmit`, Lighthouse y verificaciones CDP |
 
 ## Fases de trabajo
 
 | Fase | Cuándo (2026) | Enfoque | Estado |
 | --- | --- | --- | --- |
-| **01 · Fundación y contenido** | 5–6 nov | Estructura Next.js + TypeScript, paquete del Museo Lolita Soriano, rutas, API RESTful y primer flujo con n8n. | ✅ Completada |
+| **01 · Fundación y contenido** | 5–6 nov | Estructura Next.js + TypeScript, paquete del Museo Lolita Soriano, rutas, API RESTful y primer flujo con n8n y MongoDB. | ✅ Completada |
 | **02 · Identidad y experiencia** | 8 nov | Identidad visual de Auka y Xila, sistema de diseño, onboarding, temas, tipografía, navegación móvil y animaciones opt-in. | ✅ Completada |
 | **03 · Conversación y automatización** | 6–9 nov | Prompts por voz y perfil, webhook robusto, borradores, cancelación, reintento manual y estados de error. | ✅ Completada |
 | **04 · Accesibilidad y rendimiento** | 8–9 nov | Teclado, foco visible, contraste, regiones `aria-live`, objetivos táctiles de 44 px, movimiento reducido y auditoría Lighthouse. | ✅ Completada |
@@ -324,7 +327,7 @@ Próximos pasos sugeridos:
 ## Créditos
 
 - **Idea, diseño y desarrollo:** [@miguelarb-842](https://github.com/miguelarb-842).
-- **Stack de automatización:** n8n + Docker + Traefik + ngrok, siguiendo la base de [n8n-automation-stack](https://github.com/WalterJiron/n8n-automation-stack).
+- **Stack de automatización:** n8n + MongoDB 7 + Docker + Traefik + ngrok, siguiendo la base de [n8n-automation-stack](https://github.com/WalterJiron/n8n-automation-stack).
 - **Base de interfaz:** plantilla Next.js + HeroUI con licencia MIT. Ver [`frontend/LICENSE`](frontend/LICENSE).
 - **Contenido del museo:** simulación educativa con contenido demostrativo pendiente de validación. No es una publicación oficial del Museo Lolita Soriano.
 
