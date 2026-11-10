@@ -55,7 +55,7 @@ export function AcercaPage() {
     `Una simulación de la instalación del Sistema Auka en el ${museo.nombre}.`,
     `${salas.length} salas, ${salasConAgente.length} agentes Xila y ${fichas.length} voces con conversación propia.`,
     "Un ejercicio de demostración: no es el sistema final ni una validación del contenido del museo.",
-    "Una app sin cuentas de visitante; las conversaciones se envían a la API de la app y al agente configurado para generar la respuesta.",
+    "Una app sin cuentas de visitante; las conversaciones se procesan para generar la respuesta.",
   ] as const;
 
   return (
@@ -77,7 +77,7 @@ export function AcercaPage() {
         </p>
       </header>
 
-      <section className="mt-12 grid gap-4 md:grid-cols-3">
+      <section data-intro-contenido className="mt-12 grid gap-4 md:grid-cols-3">
         <div className="rounded-3xl border border-border bg-surface p-6">
           <span className="grid size-11 place-items-center rounded-2xl bg-accent-soft text-accent-soft-foreground">
             <Package aria-hidden="true" className="size-5" />
@@ -135,7 +135,7 @@ export function AcercaPage() {
                 >
                   <Check
                     aria-hidden="true"
-                    className="mt-0.5 size-4 shrink-0 text-success"
+                    className="mt-0.5 size-4 shrink-0 text-success-strong"
                   />
                   {item}
                 </li>
@@ -158,7 +158,7 @@ export function AcercaPage() {
                 >
                   <ArrowRight
                     aria-hidden="true"
-                    className="mt-0.5 size-4 shrink-0 text-warning"
+                    className="mt-0.5 size-4 shrink-0 text-warning-strong"
                   />
                   {item}
                 </li>
@@ -198,7 +198,10 @@ export function AcercaPage() {
 
           <div className="rounded-3xl border border-border bg-surface p-6">
             <div className="flex items-center gap-2">
-              <Sparkles aria-hidden="true" className="size-4 text-warning" />
+              <Sparkles
+                aria-hidden="true"
+                className="size-4 text-warning-strong"
+              />
               <h3 className="text-sm font-semibold">
                 {salasConAgente.length} agentes Xila en sala
               </h3>
@@ -223,10 +226,10 @@ export function AcercaPage() {
             <div className="flex items-center gap-2">
               <MessageCircleQuestion
                 aria-hidden="true"
-                className="size-4 text-success"
+                className="size-4 text-success-strong"
               />
               <h3 className="text-sm font-semibold">
-                {fichas.length} voces con chat
+                {fichas.length} voces con conversación
               </h3>
             </div>
             <ul className="mt-4 space-y-2 text-xs leading-relaxed text-muted">
@@ -279,7 +282,7 @@ export function AcercaPage() {
 
       <section className="mt-16">
         <SectionHeading
-          description="Las conversaciones no se presentan como citas. Cada ficha y cada chat muestran una etiqueta que indica qué tipo de representación estás leyendo."
+          description="Las conversaciones no se presentan como citas. Cada ficha y cada conversación muestran una etiqueta que indica qué tipo de representación estás leyendo."
           eyebrow="Voces identificadas"
           title="Representaciones, no testimonios"
         />
@@ -396,8 +399,7 @@ export function AcercaPage() {
           >
             Tus preferencias de tema, tamaño de texto y perfil se guardan solo
             en tu navegador. No hay cuentas de visitante. Al conversar, el
-            mensaje y el perfil activo se envían a la API de la app y al agente
-            configurado para generar la respuesta.
+            mensaje y el perfil activo se procesan para generar la respuesta.
           </InfoCallout>
 
           <InfoCallout
@@ -446,13 +448,13 @@ export function AcercaPage() {
 
       <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted">
         <Link
-          className="underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+          className="inline-flex min-h-11 items-center underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
           href="/configuracion"
         >
           Configuración
         </Link>
         <Link
-          className="underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+          className="inline-flex min-h-11 items-center underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
           href="/chat"
         >
           Conversaciones

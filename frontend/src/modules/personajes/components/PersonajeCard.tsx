@@ -113,7 +113,7 @@ export function PersonajeCard({
 
               <h3 className="mt-4 text-balance text-lg font-semibold tracking-tight">
                 <Link
-                  className="rounded-md transition-colors hover:text-accent"
+                  className="inline-flex min-h-11 items-center rounded-md transition-colors hover:text-accent"
                   href={`/personajes/${personaje.id}`}
                 >
                   {personaje.nombre}
@@ -139,7 +139,7 @@ export function PersonajeCard({
 
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-separator pt-4">
                 <Link
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors group-hover:text-accent"
+                  className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold transition-colors group-hover:text-accent"
                   href={`/personajes/${personaje.id}`}
                 >
                   Ver ficha
@@ -149,7 +149,7 @@ export function PersonajeCard({
                   />
                 </Link>
                 <Link
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground"
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground"
                   href={`/chat/personaje/${personaje.id}`}
                 >
                   <MessageCircleQuestion

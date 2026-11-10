@@ -39,7 +39,7 @@ export function MessageBubble({
       >
         <CircleHelp
           aria-hidden="true"
-          className="mt-0.5 size-3.5 shrink-0 text-warning"
+          className="mt-0.5 size-3.5 shrink-0 text-warning-strong"
         />
         {mensaje.contenido}
       </p>
@@ -106,7 +106,7 @@ export function MessageBubble({
                   {mensaje.reto.enunciado}
                 </p>
                 <Button
-                  className="mt-3"
+                  className="mt-3 min-h-11"
                   size="sm"
                   variant="outline"
                   onPress={onPedirPista}

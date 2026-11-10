@@ -112,7 +112,10 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
         </div>
       </header>
 
-      <section className="border-y border-separator bg-surface/40">
+      <section
+        data-intro-contenido
+        className="border-y border-separator bg-surface/40"
+      >
         <div className="auka-container grid gap-8 py-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <div>
             <p className="auka-eyebrow">Estado de la información</p>
@@ -144,7 +147,7 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
                     aria-hidden="true"
                     className="size-4"
                   />
-                  Chat de sala disponible
+                  Conversación de sala disponible
                 </span>
               ) : null}
             </div>
@@ -191,7 +194,7 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
               </div>
               <ButtonLink href={`/chat/sala/${sala.id}`} size="lg">
                 <MessageCircleQuestion aria-hidden="true" className="size-4" />
-                Iniciar chat
+                Iniciar conversación
               </ButtonLink>
             </div>
           </div>
@@ -207,7 +210,7 @@ export function SalaDetalle({ sala }: { sala: Sala }) {
                 <ArrowRight aria-hidden="true" className="size-4" />
               </ButtonLink>
             }
-            description="Las relaciones son provisionales y están marcadas como por verificar. Cada voz tiene su propio chat."
+            description="Las relaciones son provisionales y están marcadas como por verificar. Cada voz tiene su propia conversación."
             eyebrow="Voces relacionadas"
             title="Personajes y agrupaciones de esta sala"
           />

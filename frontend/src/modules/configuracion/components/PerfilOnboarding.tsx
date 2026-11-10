@@ -64,8 +64,8 @@ export function PerfilOnboarding() {
             <Modal.Footer className="mt-2 border-t border-separator pt-4">
               <p className="text-xs leading-relaxed text-muted">
                 Esta selección se guarda solo en tu navegador. No se crea una
-                cuenta. El perfil activo se envía con cada mensaje de chat para
-                adaptar la respuesta.
+                cuenta. El perfil activo se envía con cada mensaje de la
+                conversación para adaptar la respuesta.
               </p>
             </Modal.Footer>
           </Modal.Dialog>

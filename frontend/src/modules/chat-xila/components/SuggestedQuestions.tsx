@@ -26,7 +26,7 @@ export function SuggestedQuestions({
       role="group"
     >
       <button
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-warning/35 bg-warning-soft/60 px-3 py-1.5 text-xs font-medium transition-colors hover:border-warning/60 disabled:opacity-50"
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-warning/35 bg-warning-soft/60 px-3 py-1.5 text-xs font-medium transition-colors hover:border-warning/60 disabled:opacity-50"
         disabled={deshabilitado}
         type="button"
         onClick={onPedirReto}
@@ -35,7 +35,7 @@ export function SuggestedQuestions({
         Dame un reto
       </button>
       <button
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground disabled:opacity-50"
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground disabled:opacity-50"
         disabled={deshabilitado}
         type="button"
         onClick={onPedirPista}
@@ -47,7 +47,7 @@ export function SuggestedQuestions({
         <button
           key={pregunta}
           className={cn(
-            "shrink-0 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground",
+            "inline-flex min-h-11 shrink-0 items-center rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground",
             "disabled:opacity-50",
           )}
           disabled={deshabilitado}

@@ -41,7 +41,7 @@ export function Navbar({
                   <Link
                     aria-current={activo ? "page" : undefined}
                     className={cn(
-                      "inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+                      "inline-flex min-h-11 items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
                       activo
                         ? "bg-surface-secondary text-foreground"
                         : "text-muted hover:bg-surface-secondary/60 hover:text-foreground",
@@ -61,7 +61,7 @@ export function Navbar({
           <ButtonLink
             isIconOnly
             aria-label="Abrir configuración"
-            className="hidden text-muted sm:inline-flex"
+            className="hidden min-h-11 min-w-11 text-muted sm:inline-flex"
             href="/configuracion"
             size="sm"
             variant="ghost"
@@ -69,7 +69,7 @@ export function Navbar({
             <Settings2 aria-hidden="true" className="size-[1.15rem]" />
           </ButtonLink>
           <Link
-            className="hidden items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 md:inline-flex"
+            className="hidden min-h-11 items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 md:inline-flex"
             href="/chat"
           >
             <MessageCircleQuestion aria-hidden="true" className="size-4" />

@@ -29,7 +29,7 @@ export function ThemeToggle() {
             : "Cambiar a tema oscuro"
           : "Cambiar tema"
       }
-      className="grid size-9 place-items-center rounded-full text-muted transition-colors hover:bg-surface-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-50"
+      className="grid size-11 place-items-center rounded-full text-muted transition-colors hover:bg-surface-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-50"
       disabled={!mounted}
       type="button"
       onClick={() => setTheme(esOscuro ? "light" : "dark")}

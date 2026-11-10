@@ -20,7 +20,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
         <li>
           <Link
             aria-label="Inicio"
-            className="inline-flex items-center gap-1.5 rounded-md py-1 transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-md py-1 transition-colors hover:text-foreground"
             href="/"
           >
             <Home aria-hidden="true" className="size-3.5" />
@@ -41,7 +41,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
               />
               {item.href && !esUltimo ? (
                 <Link
-                  className="rounded-md py-1 transition-colors hover:text-foreground"
+                  className="inline-flex min-h-11 items-center rounded-md py-1 transition-colors hover:text-foreground"
                   href={item.href}
                 >
                   {item.label}

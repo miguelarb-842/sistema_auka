@@ -66,7 +66,7 @@ const opcionesMovimiento: Array<{
     id: "completo",
     etiqueta: "Completo",
     descripcion:
-      "Habilita las animaciones de Anime.js aunque el sistema pida reducirlas.",
+      "Muestra animaciones suaves en la navegación y al desplazarte.",
   },
 ];
 
@@ -151,13 +151,16 @@ export function ConfiguracionPage() {
           tono="accent"
         >
           No hay cuentas de visitante. El perfil, el tamaño de texto y el tema
-          se guardan con <code>localStorage</code> y podés borrarlos cuando
-          quieras. El perfil activo se envía con cada mensaje de chat para
+          se guardan solo en tu navegador y podés borrarlos cuando quieras. El
+          perfil activo se envía con cada mensaje de la conversación para
           adaptar la respuesta.
         </InfoCallout>
       </div>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <div
+        data-intro-contenido
+        className="mt-10 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]"
+      >
         <div className="space-y-6">
           <section
             aria-labelledby="titulo-tema"
@@ -284,7 +287,7 @@ export function ConfiguracionPage() {
                           {opcion.edadSugerida}
                         </span>
                         {activo ? (
-                          <span className="inline-flex items-center gap-1 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-success">
+                          <span className="inline-flex items-center gap-1 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-success-strong">
                             <Check aria-hidden="true" className="size-3" />
                             Activo
                           </span>
@@ -363,7 +366,7 @@ export function ConfiguracionPage() {
                       {opcion.descripcion}
                     </span>
                     {activo ? (
-                      <span className="inline-flex items-center gap-1 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-success">
+                      <span className="inline-flex items-center gap-1 text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-success-strong">
                         <Check aria-hidden="true" className="size-3" />
                         Activo
                       </span>
@@ -500,11 +503,9 @@ export function ConfiguracionPage() {
             title="Privacidad"
             tono="success"
           >
-            Estas preferencias se guardan solo en este navegador con las claves{" "}
-            <code>auka:perfil</code>, <code>auka:tipografia</code>,{" "}
-            <code>auka:movimiento</code> y <code>auka:tema</code>. El perfil
-            activo se envía con cada mensaje de chat para adaptar la respuesta;
-            no se usa para crear una cuenta.
+            Estas preferencias se guardan solo en este navegador. El perfil
+            activo se envía con cada mensaje de la conversación para adaptar la
+            respuesta; no se usa para crear una cuenta.
           </InfoCallout>
 
           <div className="rounded-3xl border border-border bg-surface p-5">
@@ -513,11 +514,11 @@ export function ConfiguracionPage() {
               Vuelve al perfil adolescente, al tamaño normal, al movimiento
               automático y al tema claro, y borra las preferencias guardadas. No
               elimina el historial de la conversación abierta; para eso usá
-              Reiniciar en el chat.
+              Reiniciar en la conversación.
             </p>
             <Button
               fullWidth
-              className="mt-4"
+              className="mt-4 min-h-11"
               variant="outline"
               onPress={restablecer}
             >
@@ -526,7 +527,7 @@ export function ConfiguracionPage() {
             </Button>
             <p
               aria-live="polite"
-              className="mt-2 min-h-4 text-xs font-medium text-success"
+              className="mt-2 min-h-4 text-xs font-medium text-success-strong"
             >
               {confirmacion ? "Preferencias restablecidas." : ""}
             </p>

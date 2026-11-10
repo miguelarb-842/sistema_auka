@@ -59,7 +59,7 @@ export function SalaCard({ sala, className }: SalaCardProps) {
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="text-balance text-xl font-semibold tracking-tight">
           <Link
-            className="rounded-md transition-colors hover:text-accent"
+            className="inline-flex min-h-11 items-center rounded-md transition-colors hover:text-accent"
             href={`/salas/${sala.id}`}
           >
             {sala.nombre}
@@ -81,14 +81,14 @@ export function SalaCard({ sala, className }: SalaCardProps) {
           {sala.agenteXilaUbicado ? (
             <span className="inline-flex items-center gap-1.5">
               <MessageCircleQuestion aria-hidden="true" className="size-3.5" />
-              Chat de sala disponible
+              Conversación de sala disponible
             </span>
           ) : null}
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 border-t border-separator pt-4">
           <Link
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground transition-colors group-hover:text-accent"
+            className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-foreground transition-colors group-hover:text-accent"
             href={`/salas/${sala.id}`}
           >
             Explorar sala
@@ -99,7 +99,7 @@ export function SalaCard({ sala, className }: SalaCardProps) {
           </Link>
           {sala.agenteXilaUbicado ? (
             <Link
-              className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground"
+              className="inline-flex min-h-11 items-center rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground"
               href={`/chat/sala/${sala.id}`}
             >
               Hablar con el Agente Xila

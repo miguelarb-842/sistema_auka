@@ -135,7 +135,10 @@ export function PersonajeDetalle({ personaje }: { personaje: Personaje }) {
         </div>
       </header>
 
-      <div className="border-y border-separator bg-surface/40">
+      <div
+        data-intro-contenido
+        className="border-y border-separator bg-surface/40"
+      >
         <div className="auka-container py-12 sm:py-14">
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
             <div className="space-y-10">
@@ -226,7 +229,7 @@ export function PersonajeDetalle({ personaje }: { personaje: Personaje }) {
                     aria-hidden="true"
                     className="size-4"
                   />
-                  Abrir chat
+                  Abrir conversación
                 </ButtonLink>
               </div>
             </aside>

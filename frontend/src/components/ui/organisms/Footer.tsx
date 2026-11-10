@@ -33,7 +33,7 @@ export function Footer({
               {mainNavigation.map((item) => (
                 <li key={item.href}>
                   <Link
-                    className="text-sm text-muted transition-colors hover:text-foreground"
+                    className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted transition-colors hover:text-foreground"
                     href={item.href}
                   >
                     {item.label}
@@ -50,7 +50,7 @@ export function Footer({
             <ul className="mt-4 space-y-2.5">
               <li>
                 <Link
-                  className="text-sm text-muted transition-colors hover:text-foreground"
+                  className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted transition-colors hover:text-foreground"
                   href="/acerca"
                 >
                   Acerca de la App
@@ -58,7 +58,7 @@ export function Footer({
               </li>
               <li>
                 <Link
-                  className="text-sm text-muted transition-colors hover:text-foreground"
+                  className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted transition-colors hover:text-foreground"
                   href="/configuracion"
                 >
                   Configuración
