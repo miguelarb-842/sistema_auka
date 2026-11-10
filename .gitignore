@@ -25,3 +25,6 @@ yarn-error.log*
 
 # Docker local automation stack (repositorio independiente)
 n8n-automation-stack/
+
+# Documentos de trabajo locales (propuesta, presupuestos, borradores)
+doc/
