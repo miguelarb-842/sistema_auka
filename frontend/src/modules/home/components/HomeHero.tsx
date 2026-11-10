@@ -46,41 +46,49 @@ export function HomeHero() {
               La historia se piensa,
               <span className="mt-1 block text-accent">no se copia.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
-              Recorré las {salas.length} salas del {museo.nombre}, conocé a sus
-              personajes y conversá con la guía general o con el Agente Xila
-              donde está disponible. Todo el contenido está marcado como
-              demostrativo y por verificar.
-            </p>
+            <div data-intro-contenido>
+              <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
+                Recorré las {salas.length} salas del {museo.nombre}, conocé a
+                sus personajes y conversá con la guía general o con el Agente
+                Xila donde está disponible. Todo el contenido está marcado como
+                demostrativo y por verificar.
+              </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <ButtonLink href="/salas" size="lg">
-                Entrar a las salas
-                <ArrowRight aria-hidden="true" className="size-4" />
-              </ButtonLink>
-              <ButtonLink href="/chat" size="lg" variant="outline">
-                <MessageCircleQuestion aria-hidden="true" className="size-4" />
-                Empezar a conversar
-              </ButtonLink>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <ButtonLink href="/salas" size="lg">
+                  Entrar a las salas
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </ButtonLink>
+                <ButtonLink href="/chat" size="lg" variant="outline">
+                  <MessageCircleQuestion
+                    aria-hidden="true"
+                    className="size-4"
+                  />
+                  Empezar a conversar
+                </ButtonLink>
+              </div>
+
+              <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted">
+                <li className="inline-flex items-center gap-1.5">
+                  <Landmark aria-hidden="true" className="size-4 text-accent" />
+                  {salas.length} salas para recorrer
+                </li>
+                <li className="inline-flex items-center gap-1.5">
+                  <Sparkles
+                    aria-hidden="true"
+                    className="size-4 text-warning-strong"
+                  />
+                  {salasConAgente.length} agentes Xila en sala
+                </li>
+                <li className="inline-flex items-center gap-1.5">
+                  <MessageCircleQuestion
+                    aria-hidden="true"
+                    className="size-4 text-success-strong"
+                  />
+                  {fichas.length} voces con conversación
+                </li>
+              </ul>
             </div>
-
-            <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted">
-              <li className="inline-flex items-center gap-1.5">
-                <Landmark aria-hidden="true" className="size-4 text-accent" />
-                {salas.length} salas para recorrer
-              </li>
-              <li className="inline-flex items-center gap-1.5">
-                <Sparkles aria-hidden="true" className="size-4 text-warning" />
-                {salasConAgente.length} agentes Xila en sala
-              </li>
-              <li className="inline-flex items-center gap-1.5">
-                <MessageCircleQuestion
-                  aria-hidden="true"
-                  className="size-4 text-success"
-                />
-                {fichas.length} voces con chat
-              </li>
-            </ul>
           </div>
 
           <div className="animate-auka-rise delay-2">

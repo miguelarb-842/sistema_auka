@@ -138,6 +138,8 @@ export function aplicarMovimientoEnDocumento(
   }
 
   document.documentElement.dataset.motion = resolverMovimiento(preferencia);
+  document.documentElement.dataset.anim =
+    preferencia === "completo" ? "on" : "off";
 }
 
 export function aplicarPerfilEnDocumento(perfil: PerfilId): void {

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
-import { MotionReveal } from "@/components/ui/motion/MotionReveal";
+import { ScrollReveal } from "@/components/ui/motion/ScrollReveal";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 import {
   getFichasConChat,
@@ -38,7 +38,7 @@ export function HomeExperiencia() {
     {
       icono: MessageCircleQuestion,
       titulo: "Conversá y preguntá",
-      descripcion: `La guía general, ${salasConAgente.length} agentes Xila y ${fichas.length} voces con chat responden a partir del conocimiento local de cada conversación. Si un dato no está disponible, lo indican en lugar de inventarlo.`,
+      descripcion: `La guía general, ${salasConAgente.length} agentes Xila y ${fichas.length} voces con conversación responden a partir del conocimiento local de cada conversación. Si un dato no está disponible, lo indican en lugar de inventarlo.`,
     },
   ] as const;
 
@@ -51,15 +51,14 @@ export function HomeExperiencia() {
           title="Una visita guiada por tus propias preguntas"
         />
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <ScrollReveal escalonar className="mt-10 grid gap-4 md:grid-cols-3">
           {pasos.map((paso, index) => {
             const Icono = paso.icono;
 
             return (
-              <MotionReveal
+              <div
                 key={paso.titulo}
                 className="relative rounded-3xl border border-border bg-background p-6"
-                index={index}
               >
                 <span className="absolute right-5 top-5 font-mono text-xs font-semibold text-muted">
                   0{index + 1}
@@ -73,10 +72,10 @@ export function HomeExperiencia() {
                 <p className="mt-2 text-sm leading-relaxed text-muted">
                   {paso.descripcion}
                 </p>
-              </MotionReveal>
+              </div>
             );
           })}
-        </div>
+        </ScrollReveal>
 
         <div className="mt-6 grid items-start gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <InfoCallout
@@ -84,9 +83,10 @@ export function HomeExperiencia() {
             title="Una visita sin datos inventados"
             tono="warning"
           >
-            Las {salas.length} salas y las {fichas.length} voces con chat de
-            esta instalación están marcadas como demostrativas y por verificar.
-            La información definitiva será entregada por el equipo del museo.
+            Las {salas.length} salas y las {fichas.length} voces con
+            conversación de esta instalación están marcadas como demostrativas y
+            por verificar. La información definitiva será entregada por el
+            equipo del museo.
           </InfoCallout>
 
           <Link

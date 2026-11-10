@@ -43,8 +43,8 @@ export function HomeCta() {
             </h2>
             <p className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-background/70 sm:text-base">
               Recorré las {salas.length} salas del {museo.nombre}, conocé a las{" "}
-              {fichas.length} voces con chat o empezá por la guía general. No
-              necesitás cuenta.
+              {fichas.length} voces con conversación o empezá por la guía
+              general. No necesitás cuenta.
             </p>
           </div>
 

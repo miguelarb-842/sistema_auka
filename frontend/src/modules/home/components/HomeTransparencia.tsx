@@ -2,6 +2,7 @@ import { BookCheck, CircleHelp, Scale, ShieldAlert } from "lucide-react";
 
 import { ContentBadge } from "@/components/ui/molecules/ContentBadge";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
+import { ScrollReveal } from "@/components/ui/motion/ScrollReveal";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 
 const criterios = [
@@ -44,20 +45,22 @@ export function HomeTransparencia() {
           </div>
 
           <div className="grid gap-3">
-            {criterios.map((criterio) => (
-              <div
-                key={criterio.estado}
-                className="rounded-2xl border border-border bg-background p-5"
-              >
-                <div className="flex flex-wrap items-center gap-3">
-                  <ContentBadge estado={criterio.estado} />
-                  <h3 className="text-sm font-semibold">{criterio.titulo}</h3>
+            <ScrollReveal escalonar className="grid gap-3">
+              {criterios.map((criterio) => (
+                <div
+                  key={criterio.estado}
+                  className="rounded-2xl border border-border bg-background p-5"
+                >
+                  <div className="flex flex-wrap items-center gap-3">
+                    <ContentBadge estado={criterio.estado} />
+                    <h3 className="text-sm font-semibold">{criterio.titulo}</h3>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    {criterio.descripcion}
+                  </p>
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {criterio.descripcion}
-                </p>
-              </div>
-            ))}
+              ))}
+            </ScrollReveal>
 
             <InfoCallout
               icon={<ShieldAlert aria-hidden="true" className="size-4" />}
@@ -72,11 +75,17 @@ export function HomeTransparencia() {
 
             <div className="flex flex-wrap gap-4 text-xs text-muted">
               <span className="inline-flex items-center gap-1.5">
-                <BookCheck aria-hidden="true" className="size-4 text-success" />
+                <BookCheck
+                  aria-hidden="true"
+                  className="size-4 text-success-strong"
+                />
                 Sin citas inventadas
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <Scale aria-hidden="true" className="size-4 text-warning" />
+                <Scale
+                  aria-hidden="true"
+                  className="size-4 text-warning-strong"
+                />
                 Etiquetas visibles
               </span>
               <span className="inline-flex items-center gap-1.5">

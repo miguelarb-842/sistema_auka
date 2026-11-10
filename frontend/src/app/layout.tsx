@@ -53,7 +53,7 @@ export const viewport: Viewport = {
   ],
 };
 
-const scriptPreferencias = `(function(){try{var d=document.documentElement;d.dataset.js='true';var t=localStorage.getItem('auka:tipografia');if(t==='sm'||t==='md'||t==='lg'){d.dataset.fontSize=t;}var p=localStorage.getItem('auka:perfil');if(p==='nino'||p==='adolescente'||p==='adulto'){d.dataset.perfil=p;}var m=localStorage.getItem('auka:movimiento');var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.motion=(m==='reducido'||(m!=='completo'&&reduce))?'reduced':'full';}catch(e){}})();`;
+const scriptPreferencias = `(function(){try{var d=document.documentElement;d.dataset.js='true';var t=localStorage.getItem('auka:tipografia');if(t==='sm'||t==='md'||t==='lg'){d.dataset.fontSize=t;}var p=localStorage.getItem('auka:perfil');if(p==='nino'||p==='adolescente'||p==='adulto'){d.dataset.perfil=p;}var m=localStorage.getItem('auka:movimiento');var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;d.dataset.anim=(m==='completo')?'on':'off';d.dataset.motion=(m==='reducido'||(m!=='completo'&&reduce))?'reduced':'full';}catch(e){}})();`;
 
 export default function RootLayout({
   children,

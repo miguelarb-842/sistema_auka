@@ -14,7 +14,7 @@ import { ChatOpcionCard } from "../components/ChatOpcionCard";
 
 import { Breadcrumbs } from "@/components/ui/molecules/Breadcrumbs";
 import { InfoCallout } from "@/components/ui/molecules/InfoCallout";
-import { MotionReveal } from "@/components/ui/motion/MotionReveal";
+import { ScrollReveal } from "@/components/ui/motion/ScrollReveal";
 import { SectionHeading } from "@/components/ui/molecules/SectionHeading";
 import {
   getFichasConChat,
@@ -83,159 +83,152 @@ export function ChatSelectorPage() {
         </InfoCallout>
       </div>
 
-      <section className="mt-12">
-        <SectionHeading
-          eyebrow="Guía general"
-          title="Empezá por el panorama completo"
-        />
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <ChatOpcionCard
-            config={guia}
-            contexto="Orientación por todas las salas del museo"
-            href="/chat/guia-general"
+      <div data-intro-contenido>
+        <section className="mt-12">
+          <SectionHeading
+            eyebrow="Guía general"
+            title="Empezá por el panorama completo"
           />
-          <InfoCallout
-            className="self-start"
-            icon={<Bot aria-hidden="true" className="size-4" />}
-            title="Qué puede hacer la guía"
-            tono="info"
-          >
-            Orientarte por las salas, explicar dónde está el Agente Xila y
-            derivarte a los personajes y a la agrupación invitada. La guía no
-            encarna a ningún personaje y no inventa datos sobre el museo.
-          </InfoCallout>
-        </div>
-      </section>
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <ChatOpcionCard
+              config={guia}
+              contexto="Orientación por todas las salas del museo"
+              href="/chat/guia-general"
+            />
+            <InfoCallout
+              className="self-start"
+              icon={<Bot aria-hidden="true" className="size-4" />}
+              title="Qué puede hacer la guía"
+              tono="info"
+            >
+              Orientarte por las salas, explicar dónde está el Agente Xila y
+              derivarte a los personajes y a la agrupación invitada. La guía no
+              encarna a ningún personaje y no inventa datos sobre el museo.
+            </InfoCallout>
+          </div>
+        </section>
 
-      <section className="mt-16">
-        <SectionHeading
-          description={`${salasConAgente.length} salas tienen un Agente Xila con conversación propia. En las demás salas no se muestra indicador de robot.`}
-          eyebrow="Agentes de sala"
-          title="Agente Xila · una voz por sala"
-        />
-        <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {salasConAgente.map((sala, index) =>
-            sala.agenteXilaUbicado ? (
-              <MotionReveal
-                key={sala.id}
-                interactive
-                className="h-full"
-                index={index}
-              >
+        <section className="mt-16">
+          <SectionHeading
+            description={`${salasConAgente.length} salas tienen un Agente Xila con conversación propia. En las demás salas no se muestra indicador de robot.`}
+            eyebrow="Agentes de sala"
+            title="Agente Xila · una voz por sala"
+          />
+          <ScrollReveal
+            escalonar
+            className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+          >
+            {salasConAgente.map((sala) =>
+              sala.agenteXilaUbicado ? (
                 <ChatOpcionCard
+                  key={sala.id}
                   config={sala.agenteXilaUbicado}
                   contexto={`Sala: ${sala.nombre}`}
                   href={`/chat/sala/${sala.id}`}
                 />
-              </MotionReveal>
-            ) : null,
-          )}
-        </div>
-      </section>
+              ) : null,
+            )}
+          </ScrollReveal>
+        </section>
 
-      <section className="mt-16">
-        <SectionHeading
-          description="Personajes y agrupación invitada con conversación propia. Cada ficha indica su etiqueta de representación y el estado de su contenido."
-          eyebrow="Voces del museo"
-          title="Personajes y agrupación invitada"
-        />
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {fichas.map((ficha, index) =>
-            ficha.tipo === "agrupacion" ? (
-              <MotionReveal
-                key={ficha.id}
-                interactive
-                className="h-full"
-                index={index}
-              >
-                <AgrupacionCard agrupacion={ficha} />
-              </MotionReveal>
-            ) : (
-              <MotionReveal
-                key={ficha.id}
-                interactive
-                className="h-full"
-                index={index}
-              >
-                <PersonajeCard personaje={ficha} />
-              </MotionReveal>
-            ),
-          )}
-        </div>
-      </section>
+        <section className="mt-16">
+          <SectionHeading
+            description="Personajes y agrupación invitada con conversación propia. Cada ficha indica su etiqueta de representación y el estado de su contenido."
+            eyebrow="Voces del museo"
+            title="Personajes y agrupación invitada"
+          />
+          <ScrollReveal
+            escalonar
+            className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+          >
+            {fichas.map((ficha) =>
+              ficha.tipo === "agrupacion" ? (
+                <AgrupacionCard key={ficha.id} agrupacion={ficha} />
+              ) : (
+                <PersonajeCard key={ficha.id} personaje={ficha} />
+              ),
+            )}
+          </ScrollReveal>
+        </section>
 
-      <section className="mt-16">
-        <SectionHeading
-          eyebrow="Cómo funciona"
-          title="Lo que podés esperar de la conversación"
-        />
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {claves.map((clave, index) => {
-            const Icono = clave.icono;
+        <section className="mt-16">
+          <SectionHeading
+            eyebrow="Cómo funciona"
+            title="Lo que podés esperar de la conversación"
+          />
+          <ScrollReveal
+            escalonar
+            className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {claves.map((clave) => {
+              const Icono = clave.icono;
 
-            return (
-              <MotionReveal
-                key={clave.titulo}
-                className="rounded-2xl border border-border bg-surface p-5"
-                index={index}
-              >
-                <span className="grid size-10 place-items-center rounded-xl bg-surface-secondary">
-                  <Icono aria-hidden="true" className="size-5" />
-                </span>
-                <h3 className="mt-4 text-sm font-semibold">{clave.titulo}</h3>
-                <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                  {clave.descripcion}
+              return (
+                <div
+                  key={clave.titulo}
+                  className="rounded-2xl border border-border bg-surface p-5"
+                >
+                  <span className="grid size-10 place-items-center rounded-xl bg-surface-secondary">
+                    <Icono aria-hidden="true" className="size-5" />
+                  </span>
+                  <h3 className="mt-4 text-sm font-semibold">{clave.titulo}</h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-muted">
+                    {clave.descripcion}
+                  </p>
+                </div>
+              );
+            })}
+          </ScrollReveal>
+        </section>
+
+        <div className="mt-10 grid gap-4 lg:grid-cols-2">
+          <Link
+            className="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-foreground/25"
+            href="/configuracion"
+          >
+            <div className="flex items-start gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent-soft-foreground">
+                <Lightbulb aria-hidden="true" className="size-5" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold">Adaptá el tono</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  Cambiá tu perfil para recibir explicaciones y retos adecuados
+                  a tu edad. La conversación se reinicia con el nuevo tono.
                 </p>
-              </MotionReveal>
-            );
-          })}
+              </div>
+            </div>
+            <ArrowRight
+              aria-hidden="true"
+              className="size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5"
+            />
+          </Link>
+
+          <Link
+            className="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-foreground/25"
+            href="/salas"
+          >
+            <div className="flex items-start gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-warning-soft text-warning-soft-foreground">
+                <MessageCircleQuestion aria-hidden="true" className="size-5" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold">
+                  Primero recorré una sala
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  Si preferís tener contexto antes de preguntar, entrá a una
+                  sala y volvé a la conversación cuando tengas una pregunta en
+                  mente.
+                </p>
+              </div>
+            </div>
+            <ArrowRight
+              aria-hidden="true"
+              className="size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5"
+            />
+          </Link>
         </div>
-      </section>
-
-      <div className="mt-10 grid gap-4 lg:grid-cols-2">
-        <Link
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-foreground/25"
-          href="/configuracion"
-        >
-          <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent-soft-foreground">
-              <Lightbulb aria-hidden="true" className="size-5" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold">Adaptá el tono</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted">
-                Cambiá tu perfil para recibir explicaciones y retos adecuados a
-                tu edad. La conversación se reinicia con el nuevo tono.
-              </p>
-            </div>
-          </div>
-          <ArrowRight
-            aria-hidden="true"
-            className="size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5"
-          />
-        </Link>
-
-        <Link
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-foreground/25"
-          href="/salas"
-        >
-          <div className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-warning-soft text-warning-soft-foreground">
-              <MessageCircleQuestion aria-hidden="true" className="size-5" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold">Primero recorré una sala</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted">
-                Si preferís tener contexto antes de preguntar, entrá a una sala
-                y volvé al chat cuando tengas una pregunta en mente.
-              </p>
-            </div>
-          </div>
-          <ArrowRight
-            aria-hidden="true"
-            className="size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5"
-          />
-        </Link>
       </div>
     </div>
   );

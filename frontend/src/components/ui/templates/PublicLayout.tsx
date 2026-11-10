@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Footer } from "../organisms/Footer";
 import { MobileBottomNav } from "../organisms/MobileBottomNav";
 import { Navbar } from "../organisms/Navbar";
+import { IntroPagina } from "../motion/IntroPagina";
 
 interface PublicLayoutProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ export function PublicLayout({
       >
         Saltar al contenido
       </a>
+      <IntroPagina />
       <Navbar etiquetaInstalacion={etiquetaInstalacion} />
       <main className="flex-1" id="contenido">
         {children}

@@ -8,7 +8,7 @@ import { Landmark, SearchX } from "lucide-react";
 import { SalaCard } from "./SalaCard";
 
 import { EmptyState } from "@/components/ui/molecules/EmptyState";
-import { MotionReveal } from "@/components/ui/motion/MotionReveal";
+import { ScrollReveal } from "@/components/ui/motion/ScrollReveal";
 import { SearchInput } from "@/components/ui/molecules/SearchInput";
 
 const filtros = [
@@ -85,8 +85,8 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
               aria-pressed={filtro === item.id}
               className={
                 filtro === item.id
-                  ? "shrink-0 rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-                  : "shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  ? "inline-flex min-h-11 shrink-0 items-center rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                  : "inline-flex min-h-11 shrink-0 items-center rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-muted transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               }
               type="button"
               onClick={() => setFiltro(item.id)}
@@ -97,6 +97,7 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
         </div>
 
         <SearchInput
+          atajo
           className="w-full lg:max-w-xs"
           controls="resultados-salas"
           label="Buscar salas"
@@ -107,6 +108,7 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
       </div>
 
       <div id="resultados-salas">
+        <h2 className="sr-only">Salas disponibles</h2>
         <p className="mt-4 text-xs font-medium text-muted" role="status">
           {filtradas.length}{" "}
           {filtradas.length === 1 ? "sala encontrada" : "salas encontradas"}
@@ -114,23 +116,20 @@ export function SalasCatalogo({ salas }: { salas: readonly Sala[] }) {
         </p>
 
         {filtradas.length > 0 ? (
-          <div className="mt-5 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {filtradas.map((sala, index) => (
-              <MotionReveal
-                key={sala.id}
-                interactive
-                className="h-full"
-                index={index}
-              >
-                <SalaCard sala={sala} />
-              </MotionReveal>
+          <ScrollReveal
+            key={filtro}
+            escalonar
+            className="mt-5 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+          >
+            {filtradas.map((sala) => (
+              <SalaCard key={sala.id} sala={sala} />
             ))}
-          </div>
+          </ScrollReveal>
         ) : (
           <EmptyState
             action={
               <button
-                className="inline-flex items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 type="button"
                 onClick={() => {
                   setConsulta("");

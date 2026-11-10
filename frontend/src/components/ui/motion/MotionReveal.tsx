@@ -4,12 +4,13 @@ import type { ReactNode } from "react";
 
 import { useEffect, useRef } from "react";
 
+import { animacionesActivas, cargarAnime } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { usePreferencias } from "@/modules/configuracion/context/PreferenciasProvider";
-import { resolverMovimiento } from "@/modules/configuracion/services/preferencias.storage";
 
-type AnimeModule = typeof import("animejs");
-type AnimeAnimation = ReturnType<AnimeModule["animate"]>;
+type AnimeAnimation = ReturnType<
+  Awaited<ReturnType<typeof cargarAnime>>["animate"]
+>;
 
 interface MotionRevealProps {
   children: ReactNode;
@@ -24,21 +25,13 @@ interface MotionRevealProps {
   tapScale?: number;
 }
 
-let animePromise: Promise<AnimeModule> | null = null;
-
-function cargarAnime(): Promise<AnimeModule> {
-  animePromise ??= import("animejs");
-
-  return animePromise;
-}
-
 /**
  * Envoltorio externo de animación.
  *
- * - Revela el contenido con Anime.js cuando entra al viewport.
- * - En tarjetas, añade una pulsación breve al tocar (no depende de hover).
+ * - Solo crea animaciones cuando la preferencia guardada es `completo`.
+ * - Revela el contenido cuando entra al viewport.
  * - No modifica el DOM interno de las tarjetas de HeroUI.
- * - Con movimiento reducido no oculta ni anima nada.
+ * - Con cualquier otra preferencia no oculta ni anima nada.
  */
 export function MotionReveal({
   children,
@@ -50,7 +43,7 @@ export function MotionReveal({
 }: MotionRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { movimiento } = usePreferencias();
-  const reducido = resolverMovimiento(movimiento) === "reduced";
+  const activo = movimiento === "completo";
   const retardo = delay + Math.min(index, 8) * 65;
 
   useEffect(() => {
@@ -60,10 +53,11 @@ export function MotionReveal({
       return;
     }
 
-    if (reducido) {
+    if (!activo || !animacionesActivas()) {
       element.dataset.reveal = "done";
       element.style.removeProperty("opacity");
       element.style.removeProperty("transform");
+      element.style.removeProperty("will-change");
 
       return;
     }
@@ -71,31 +65,49 @@ export function MotionReveal({
     let animation: AnimeAnimation | undefined;
     let cancelado = false;
 
+    const mostrar = () => {
+      element.dataset.reveal = "done";
+      element.style.removeProperty("opacity");
+      element.style.removeProperty("transform");
+      element.style.removeProperty("will-change");
+    };
+
+    // El estado oculto se aplica solo cuando la animación va a ejecutarse.
+    element.style.opacity = "0";
+    element.style.transform = "translate3d(0, 1.125rem, 0)";
+    element.style.willChange = "opacity, transform";
+
     const revelar = async () => {
-      const anime = await cargarAnime();
+      try {
+        const anime = await cargarAnime();
 
-      if (cancelado || !element.isConnected) {
-        return;
+        if (cancelado || !element.isConnected) {
+          mostrar();
+
+          return;
+        }
+
+        element.dataset.reveal = "playing";
+
+        animation = anime.animate(element, {
+          opacity: [0, 1],
+          translateY: [18, 0],
+          duration: 720,
+          delay: retardo,
+          ease: "outCubic",
+          onComplete: mostrar,
+        });
+      } catch {
+        mostrar();
       }
-
-      element.dataset.reveal = "playing";
-
-      animation = anime.animate(element, {
-        opacity: [0, 1],
-        translateY: [18, 0],
-        duration: 720,
-        delay: retardo,
-        ease: "outCubic",
-        onComplete: () => {
-          element.dataset.reveal = "done";
-          element.style.removeProperty("will-change");
-        },
-      });
     };
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
+      (entradas) => {
+        if (
+          entradas.some((entrada) => entrada.isIntersecting) &&
+          element.dataset.reveal !== "done"
+        ) {
           observer.disconnect();
           void revelar();
         }
@@ -105,22 +117,17 @@ export function MotionReveal({
 
     observer.observe(element);
 
-    // Si la hidratación o el observer fallan, el contenido nunca queda oculto.
-    const respaldo = window.setTimeout(() => {
-      if (element.dataset.reveal === "pending") {
-        element.dataset.reveal = "done";
-        element.style.removeProperty("opacity");
-        element.style.removeProperty("transform");
-      }
-    }, 2400);
+    // Respaldo: si la hidratación o el observer fallan, nada queda oculto.
+    const respaldo = window.setTimeout(mostrar, 3200);
 
     return () => {
       cancelado = true;
       observer.disconnect();
       window.clearTimeout(respaldo);
       animation?.cancel();
+      mostrar();
     };
-  }, [reducido, retardo]);
+  }, [activo, retardo]);
 
   return (
     <div
@@ -128,12 +135,8 @@ export function MotionReveal({
       className={cn("anime-reveal", interactive && "anime-card", className)}
       data-reveal="pending"
       onPointerDown={
-        interactive
+        interactive && activo
           ? () => {
-              if (reducido) {
-                return;
-              }
-
               void cargarAnime().then((anime) => {
                 const element = ref.current;
 

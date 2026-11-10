@@ -36,7 +36,7 @@ export function SalasPage() {
         </InfoCallout>
       </div>
 
-      <div className="mt-10">
+      <div data-intro-contenido className="mt-10">
         <SalasCatalogo salas={salas} />
       </div>
     </div>
